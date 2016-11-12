@@ -1,0 +1,17 @@
+{% extends 'dotepad/_base.html' %}
+{% load bootstrap3 %}
+
+{% block title %}
+  Register | {{ block.super }}
+{% endblock title %}
+
+{% block body %}
+  <h2>Sign Up</h2>
+  <form action="/register" method="POST">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    {% buttons %}
+      <button type="submit" class="btn btn-primary">Register</button>
+    {% endbuttons %}
+  </form>
+{% endblock body %}

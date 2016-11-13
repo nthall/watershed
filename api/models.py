@@ -4,14 +4,16 @@ from django.conf import settings
 from django.db import models
 
 PLATFORMS = (
-    (0, 'Soundcloud'),
+    (0, 'Unknown'),
     (1, 'Bandcamp'),
-    (2, 'Youtube')
+    (2, 'Youtube'),
+    (3, 'Soundcloud'),
 )
 
 
 class Item(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='items',
+                             on_delete=models.CASCADE)
     uri = models.URLField()
     platform = models.IntegerField(choices=PLATFORMS)
     referrer = models.URLField()

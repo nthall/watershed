@@ -8,6 +8,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from models import Item
+from permissions import IsOwner
 from serializers import ItemSerializer
 
 User = get_user_model()
@@ -17,7 +18,7 @@ class Queue(APIView):
     '''
     view or add to the queue
     '''
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated, IsOwner,)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -40,10 +41,8 @@ class Queue(APIView):
 class ItemDetail(APIView):
     '''
     view, update, or remove an Item
-
-    todo: authentication lol
     '''
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated, IsOwner,)
 
     def get_object(self, user_id, item_id):
         try:

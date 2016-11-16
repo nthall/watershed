@@ -1,3 +1,3 @@
-chrome.browserAction.onClicked.addListener(function( tabs.Tab tab) {
-  $(document).append("<p>" + tab.url + "</p>");
-}
+chrome.tabs.query({"currentWindow": true, "active": true}, function(tabs) {
+  $("body").append($("<p>" + tabs[0].url + "</p>"));
+});

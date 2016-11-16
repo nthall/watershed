@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.getenv('PLAYQ_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('playq_dev')
 
 ALLOWED_HOSTS = ['playq.io']
 
@@ -42,6 +42,7 @@ INSTALLED_APPS = (
     'bootstrap3',
     'passwords',
     'rest_framework',
+    'oauth2_provider',
     # app
     'customauth.apps.CustomauthConfig',
     'api.apps.ApiConfig',
@@ -86,18 +87,17 @@ WSGI_APPLICATION = 'playq.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
     }
-}
 
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -113,3 +113,19 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR + STATIC_URL
+
+
+PASSWORD_HASHERS = [
+    'django.contrib.auth.hashers.Argon2PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
+    'django.contrib.auth.hashers.BCryptPasswordHasher',
+]
+
+
+REST_FRAMEWORK = {}
+if not DEBUG:
+    REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'] = [
+        'oauth2_provider.ext.rest_framework.OAuth2Authentication'
+    ]

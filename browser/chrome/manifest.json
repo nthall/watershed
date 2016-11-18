@@ -7,5 +7,9 @@
         "default_title": "PlayQ",
         "default_icon": "media/favicon-music.png"
     },
-    "permissions": ["tabs"]
+    "permissions": [
+        "tabs",
+        "http://*/",
+        "https://*/"
+    ]
 }

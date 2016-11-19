@@ -1,17 +1,3 @@
-var sources = ['',
- bandcamp,
- youtube, 
- soundcloud
-]
-
-for (var i=1;i<sources.length;i++) {
-  data = sources[i](); 
-  if (data !== false) {
-    data['source'] = i;
-    chrome.runtime.sendMessage(data);
-  }
-}
-
 var urlCheck = function(srcName) {
   return (document.location.href.indexOf(srcName) > -1);
 }
@@ -64,5 +50,19 @@ var youtube = function() {
     return data;
   } else {
     return false;
+  }
+}
+
+var sources = ['',
+ bandcamp,
+ youtube, 
+ soundcloud
+];
+
+for (var i=1;i<sources.length;i++) {
+  data = sources[i](); 
+  if (data !== false) {
+    data['source'] = i;
+    chrome.runtime.sendMessage(data);
   }
 }

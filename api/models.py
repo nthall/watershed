@@ -18,7 +18,7 @@ class Item(models.Model):
     platform = models.IntegerField(choices=PLATFORMS)
     artist = models.CharField(max_length=255, null=True)
     title = models.CharField(max_length=255, null=True)
-    referrer = models.URLField()
+    referrer = models.URLField(null=True)
     position = models.PositiveIntegerField()
     added_on = models.DateTimeField(auto_now_add=True)
     played = models.BooleanField(default=False)

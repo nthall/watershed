@@ -24,8 +24,6 @@ class ItemSerializer(serializers.ModelSerializer):
     todo: validation -- only supported platforms
             (this should probably be frontend's job, but, just to be sure)
     '''
-    user = serializers.ReadOnlyField(source='user.pk')
-
     class Meta:
         model = Item
-        fields = ('user', 'uri', 'platform', 'referrer')
+        fields = ('user', 'uri', 'artist', 'title', 'platform', 'referrer')

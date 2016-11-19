@@ -16,6 +16,8 @@ class Item(models.Model):
                              on_delete=models.CASCADE)
     uri = models.URLField()
     platform = models.IntegerField(choices=PLATFORMS)
+    artist = models.CharField(max_length=255, null=True)
+    title = models.CharField(max_length=255, null=True)
     referrer = models.URLField()
     position = models.PositiveIntegerField()
     added_on = models.DateTimeField(auto_now_add=True)

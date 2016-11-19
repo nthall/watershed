@@ -7,6 +7,10 @@
         "default_title": "PlayQ",
         "default_icon": "media/favicon-music.png"
     },
+    "background": {
+        "persistent": true,
+        "page": "html/background.html"
+    },
     "permissions": [
         "tabs",
         "http://*/",

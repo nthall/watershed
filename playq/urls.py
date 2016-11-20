@@ -15,12 +15,14 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 
+from rest_framework.authtoken import views
+
 admin.autodiscover()
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^auth/', include('rest_framework.urls', namespace='rest_framework')),
-    url(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+    url(r'^authtoken/', views.obtain_auth_token),
     url(r'', include('api.urls')),
     url(r'', include('player.urls')),
 ]

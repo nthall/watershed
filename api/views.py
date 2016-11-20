@@ -1,5 +1,7 @@
 from __future__ import unicode_literals
 
+import logging
+
 from django.http import Http404
 from django.contrib.auth import get_user_model
 
@@ -13,6 +15,8 @@ from serializers import ItemSerializer
 
 User = get_user_model()
 
+logger = logging.getLogger(__name__)
+
 
 class Queue(APIView):
     '''
@@ -23,16 +27,21 @@ class Queue(APIView):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
-    def get(self, request, user_id, format=None):
-        user = User.objects.get(pk=user_id)
-        items = Item.objects.filter(user=user, played=False)
+    def get(self, request, format=None):
+        items = Item.objects.filter(user=request.user.pk, played=False)
         serializer = ItemSerializer(items, many=True)
         return Response(serializer.data)
 
-    def post(self, request, user_id, format=None):
-        serializer = ItemSerializer(data=request.data)
+    def post(self, request, format=None):
+        data = {"user": request.user.pk}
+        data.update(request.data)
+        logger.debug("post: {}".format(request.POST))
+        logger.debug("data : {}".format(data))
+        serializer = ItemSerializer(data=data)
         if serializer.is_valid():
-            serializer.save(user=request.user)
+            logger.debug("is valid!")
+            serializer.save()
+            logger.debug("saved!")
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

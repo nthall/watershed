@@ -42,7 +42,7 @@ INSTALLED_APPS = (
     'bootstrap3',
     'passwords',
     'rest_framework',
-    'oauth2_provider',
+    'rest_framework.authtoken',
     # app
     'customauth.apps.CustomauthConfig',
     'api.apps.ApiConfig',
@@ -56,7 +56,6 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
-    'oauth2_provider.middleware.OAuth2TokenMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -125,18 +124,70 @@ PASSWORD_HASHERS = [
 ]
 
 
-REST_FRAMEWORK = {}
-REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'] = [
-    'oauth2_provider.ext.rest_framework.OAuth2Authentication'
-]
-if DEBUG:
-    REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'] += [
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication'
     ]
+}
 
 
-AUTHENTICATION_BACKENDS = [
-    'oauth2_provider.backends.OAuth2Backend',
-    'django.contrib.auth.backends.ModelBackend'
-]
+if DEBUG:
+    default_handler = 'file'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        }
+    },
+    'formatters': {
+        'verbose': {
+            'format': "[%(asctime)s] %(levelname)s \
+                       [%(name)s:%(lineno)s] %(message)s",
+            'datefmt': "%d/%b/%Y %H:%M:%S"
+        },
+        'simple': {
+            'format': '%(levelname)s - %(message)s'
+        },
+    },
+    'handlers': {
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler'
+        },
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR + '/app.log',
+            'formatter': 'verbose'
+        },
+        'stdout': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+
+        }
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+        'playq': {
+            'handlers': [default_handler],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'api': {
+            'handlers': [default_handler],
+            'level': 'DEBUG',
+            'propagate': True,
+        }
+    }
+}

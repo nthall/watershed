@@ -34,14 +34,12 @@ class Queue(APIView):
 
     def post(self, request, format=None):
         data = {"user": request.user.pk}
-        data.update(request.data)
-        logger.debug("post: {}".format(request.POST))
-        logger.debug("data : {}".format(data))
-        serializer = ItemSerializer(data=data)
+        data['platform'] = int(request.data.get('platform'))
+        post = request.data.copy()
+        post.update(data)
+        serializer = ItemSerializer(data=post)
         if serializer.is_valid():
-            logger.debug("is valid!")
             serializer.save()
-            logger.debug("saved!")
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

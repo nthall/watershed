@@ -188,6 +188,11 @@ LOGGING = {
             'handlers': [default_handler],
             'level': 'DEBUG',
             'propagate': True,
+        },
+        'rest_framework': {
+            'handlers': [default_handler],
+            'level': 'ERROR',
+            'propagate': True,
         }
     }
 }

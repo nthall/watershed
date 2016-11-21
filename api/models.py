@@ -23,10 +23,10 @@ class Item(models.Model):
     artist = models.CharField(max_length=255, null=True)
     title = models.CharField(max_length=255, null=True)
     referrer = models.URLField(null=True)
-    position = models.PositiveIntegerField()
+    position = models.PositiveIntegerField(default=1)
     added_on = models.DateTimeField(auto_now_add=True)
     played = models.BooleanField(default=False)
-    played_on = models.DateTimeField()
+    played_on = models.DateTimeField(null=True)
     fave = models.BooleanField(default=False)
     # tags = fields.ArrayField (postgres-specific, so, todo i guess?)
 
@@ -37,7 +37,7 @@ class Item(models.Model):
         '''
         todo: allow checkbox option to save at front of list
         '''
-        queue = Item.objects.get(user=self.user)
+        queue = Item.objects.filter(user=self.user)
         self.position = len(queue)
 
         super(Item, self).save(*args, **kwargs)

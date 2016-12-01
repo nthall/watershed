@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 class UserSerializer(serializers.ModelSerializer):
     queue = serializers.PrimaryKeyRelatedField(
         many=True,
-        queryset=Item.objects.filter(played=False)
+        queryset=Item.objects.filter(position__gte=0)
     )
 
     class Meta:
@@ -28,7 +28,9 @@ class ItemSerializer(serializers.ModelSerializer):
     todo: validation -- only supported platforms
             (this should probably be frontend's job, but, just to be sure)
     '''
+    id = serializers.ReadOnlyField(source='Item.pk')
+
     class Meta:
         model = Item
-        fields = ('user', 'position', 'uri', 'artist',
+        fields = ('id', 'user', 'position', 'uri', 'artist',
                   'title', 'platform', 'referrer')

@@ -28,7 +28,7 @@ class Queue(APIView):
         serializer.save(user=self.request.user)
 
     def get(self, request, format=None):
-        items = Item.objects.filter(user=request.user.pk, played=False)
+        items = Item.objects.filter(user=request.user.pk, position__gte=0)
         serializer = ItemSerializer(items, many=True)
         return Response(serializer.data)
 

@@ -37,15 +37,18 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     # 3rd party
-    'channels',
     'bootstrap3',
     'passwords',
     'rest_framework',
     'rest_framework.authtoken',
+    'webpack_loader',
+
     # app
     'customauth.apps.CustomauthConfig',
     'api.apps.ApiConfig',
+    'player.apps.PlayerConfig'
 )
 
 AUTH_USER_MODEL = 'customauth.User'
@@ -111,6 +114,9 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'frontend'),
+)
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR + STATIC_URL
 
@@ -130,6 +136,14 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication'
     ]
+}
+
+
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'BUNDLE_DIR_NAME': 'bundles/',
+        'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.json')
+    }
 }
 
 

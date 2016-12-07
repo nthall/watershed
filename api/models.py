@@ -7,6 +7,8 @@ from django.dispatch import receiver
 
 from rest_framework.authtoken.models import Token
 
+import requests
+
 PLATFORMS = (
     (0, 'Unknown'),
     (1, 'Bandcamp'),
@@ -20,9 +22,10 @@ class Item(models.Model):
                              on_delete=models.CASCADE)
     uri = models.URLField()
     platform = models.IntegerField(choices=PLATFORMS)
-    artist = models.CharField(max_length=255, null=True)
-    title = models.CharField(max_length=255, null=True)
-    referrer = models.URLField(null=True)
+    artist = models.CharField(max_length=255, blank=True)
+    title = models.CharField(max_length=255, blank=True)
+    embed = models.TextField(blank=True)
+    referrer = models.URLField(blank=True)
     position = models.IntegerField(default=1)
     added_on = models.DateTimeField(auto_now_add=True)
     played_on = models.DateTimeField(null=True)
@@ -34,10 +37,22 @@ class Item(models.Model):
 
     def save(self, *args, **kwargs):
         '''
-        todo: allow checkbox option to save at front of list
+        todo: allow checkbox option to save at front of list?
         '''
         queue = Item.objects.filter(user=self.user)
         self.position = len(queue)
+
+        if (self.platform == 3):
+            # get soundcloud embed
+            data = {
+                'iframe': True,
+                'format': 'json',
+                'auto_play': False,
+                'url': self.uri
+            }
+            r = requests.get('https://soundcloud.com/oembed', data)
+            response = r.json()
+            self.embed = response['html']
 
         super(Item, self).save(*args, **kwargs)
 

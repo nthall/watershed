@@ -32,5 +32,5 @@ class ItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Item
-        fields = ('id', 'user', 'position', 'uri', 'artist',
-                  'title', 'platform', 'referrer')
+        fields = ('id', 'user', 'position', 'uri', 'artist', 'embed',
+                  'title', 'platform', 'referrer', 'played_on')

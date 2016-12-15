@@ -18,6 +18,7 @@
     "less-loader": "^2.2.3",
     "react": "^15.4.0",
     "react-dom": "^15.4.0",
+    "react-soundcloud-widget": "^2.0.4",
     "webpack": "^1.13.3",
     "webpack-bundle-tracker": "0.0.93"
   }

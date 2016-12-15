@@ -29,6 +29,7 @@ export default class App extends React.Component {
         password
       },
       dataType: 'json',
+      contentType: 'json',
       success: this.processLogin
     })
   }

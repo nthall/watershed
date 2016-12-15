@@ -3,3 +3,5 @@ db.sqlite3
 static/
 pid
 app.log
+node_modules/
+frontend/bundles/

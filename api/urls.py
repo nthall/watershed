@@ -8,7 +8,7 @@ import views
 
 urlpatterns = [
     url(r'^queue/$', views.Queue.as_view()),
-    url(r'^item/(?P<item_id>[0-9]+)/$',
+    url(r'^item/$',
         views.ItemDetail.as_view()),
 ]
 

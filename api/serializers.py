@@ -29,8 +29,6 @@ class ItemSerializer(BulkSerializerMixin, serializers.ModelSerializer):
     todo: validation -- only supported platforms
             (this should probably be frontend's job, but, just to be sure)
     '''
-    id = serializers.ReadOnlyField(source='Item.id')
-
     class Meta:
         model = Item
         fields = ('id', 'user', 'position', 'uri', 'artist', 'embed',

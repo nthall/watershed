@@ -1,5 +1,6 @@
 import React from 'react'
 import SoundCloud from 'react-soundcloud-widget'
+import Youtube from 'react-youtube'
 
 class Player extends React.Component {
   constructor(props) {
@@ -22,17 +23,10 @@ class Player extends React.Component {
         setTimeout(this.updateServer(data), 2000)
       }.bind(this),
       success: function(response) {
-        // TBD
+        // TBD, maybe noop
         return
       }
     }).bind(this)
-  }
-
-  componentDidMount() {
-    this.updateServer({
-      'played_on': Date.now(),
-      'position': 0,
-    })
   }
 
   render() {
@@ -40,22 +34,26 @@ class Player extends React.Component {
 }
 
 class BandcampPlayer extends Player {
-
   render() {
     return (
-      <div>
-        {this.props.data.embed}
+      <div className="bandcampContainer">
+        <iframe id="bandcampPlayer" src={this.props.item.embed} />
       </div>
     )
   }
 }
 
 class YoutubePlayer extends Player {
+  constructor(props) {
+    super(props)
+  }
+
   render() {
     return (
-      <div>
-        <div className='youtubeContainer'></div>
-      </div>
+      <Youtube
+        videoId={this.props.item.embed}
+        onEnd={this.props.playbackEnd}
+      />
     )
   }
 }
@@ -67,7 +65,6 @@ class SoundcloudPlayer extends Player {
       visual: true,
     }
 
-    this.componentDidMount = this.componentDidMount.bind(this)
   }
 
   render() {

@@ -10,7 +10,7 @@ export default class Item extends React.Component {
 
   render() {
     return (
-      <li key={this.props.key}>{this.props.data.artist}{this.state.sep}{this.props.data.title}</li>
+      <li>{this.props.data.artist}{this.state.sep}{this.props.data.title}</li>
     )
   }
 }

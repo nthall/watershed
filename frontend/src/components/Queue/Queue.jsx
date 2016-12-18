@@ -35,6 +35,20 @@ export default class Queue extends React.Component {
     // (rather than just use the response data to update state -- just to make sure
     //  we get the full list)
     // this is maybe slightly premature but TOO DANG BAD
+
+    // NB: only send what we need to send to avoid overwriting new info on server
+
+    let payload = this.state.items.map((item) => {
+      const whitelist = ['id', 'position']
+      let output = {}
+
+      for (let i=0, l=whitelist.length; i < l; i++) {
+        output[whitelist[i]] = item[whitelist[i]]
+      }
+
+      return output
+    })
+
     $.ajax({
       context: this,
       header: this.props.user.header(),
@@ -43,16 +57,16 @@ export default class Queue extends React.Component {
       cache: false,
       dataType: 'json',
       contentType: 'application/json',
-      data: JSON.stringify(this.state.items),
+      data: JSON.stringify(payload),
       processData: false,
       success: this.loadItemsFromServer,
-      error: function() { console.log('aw hell', this.state.items) }.bind(this)
+      error: function() { console.log('aw hell', payload) }.bind(this)
     })
   }
 
   componentDidMount() {
     this.loadItemsFromServer()
-    //setInterval(this.refreshData, 5000)
+    setInterval(this.refreshData, 5000)
     
     // make sure there's a 0th position item. if not, advance the list!
     let check = $.grep(this.state.items, (item) => { return item.position == 0 })
@@ -72,8 +86,11 @@ export default class Queue extends React.Component {
     })
   }
 
-  playbackEnd() {
+  playbackEnd(callback=false) {
     this.advanceList()
+    if (callback) {
+      callback()
+    }
   }
 
   render() {
@@ -83,18 +100,14 @@ export default class Queue extends React.Component {
       }
     })
 
-    // todo
-    // i think right now the queryset excludes history.
-    let History = this.state.items.map((item) => {
-      if (item.position < 0) {
-        return <Item data={item} key={item.id} />
-      }
-    })
-
     let currentItem = this.state.items.filter((item) => { return item.position == 0 })[0]
     let Player = false
     if (typeof currentItem !== 'undefined') {
-      Player = getPlayer({item: currentItem, playbackEnd: this.playbackEnd})
+      Player = getPlayer({
+        item: currentItem, 
+        playbackEnd: this.playbackEnd,
+        user: this.props.user
+      })
     }
 
     return (

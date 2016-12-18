@@ -18,11 +18,11 @@ PLATFORMS = (
 
 
 class ItemManager(models.Manager):
-    def queue(user):
-        return Item.objects.filter(user=user, position__gte=0)
+    def queue(self, user):
+        return self.filter(user=user, position__gte=0)
 
-    def history(user):
-        return Item.objects.filter(user=user, position__lt=0)
+    def history(self, user):
+        return self.filter(user=user, position__lt=0)
 
 
 class Item(models.Model):
@@ -34,7 +34,7 @@ class Item(models.Model):
     title = models.CharField(max_length=255, blank=True)
     embed = models.TextField(blank=True)
     referrer = models.URLField(blank=True)
-    position = models.IntegerField(default=1)
+    position = models.IntegerField(null=True)
     added_on = models.DateTimeField(auto_now_add=True)
     played_on = models.DateTimeField(null=True)
     fave = models.BooleanField(default=False)
@@ -49,10 +49,11 @@ class Item(models.Model):
         '''
         todo: allow checkbox option to save at front of list?
         '''
-        queue = Item.objects.queue(self.user)
-        self.position = len(queue)
 
-        if (self.platform == 3):
+        if self.position is None:
+            self.position = Item.objects.queue(self.user).count()
+
+        if (self.platform == 3) and not self.embed:
             # get soundcloud embed
             data = {
                 'iframe': True,
@@ -67,20 +68,19 @@ class Item(models.Model):
         super(Item, self).save(*args, **kwargs)
 
     def move(self, new_position):
-        ''' move a track and adjust the rest of the queue around it '''
-        old_position = self.position
-        self.position = new_position
-        queue = Item.objects.queue()
-        if old_position > new_position:
-            adjust = 1
-            items = queue.exclude(position__gte=old_position, position__lte=0)
-        else:
-            adjust = -1
-            items = queue.filter(position__gte=old_position)
-        for item in items:
-            item.position += adjust
+        '''
+        move an item to a new pos and adjust the rest of the queue around it
+
+        NB: ignore history for now, it'll break shit
+        '''
+        queue = Item.objects.queue(self.user)
+        queue = list(queue)
+        queue.remove(self)
+        queue.insert(new_position, self)
+
+        for i, item in enumerate(queue):
+            item.position = i
             item.save()
-        self.save()
 
     def move_to_front(self):
         ''' move an item to position 1 '''
@@ -88,7 +88,7 @@ class Item(models.Model):
 
     def move_to_back(self):
         ''' move an item to the end of the queue '''
-        self.move(len(Item.objects.queue()))
+        self.move(Item.objects.queue(self.user).count())
 
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)

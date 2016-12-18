@@ -64,3 +64,6 @@ class ItemDetail(BulkUpdateModelMixin, ListCreateAPIView):
             return Item.objects.filter(pk=item_id, user=user)
         except Item.DoesNotExist:
             raise Http404
+
+    def patch(self, request, *args, **kwargs):
+        return self.partial_bulk_update(request, *args, **kwargs)

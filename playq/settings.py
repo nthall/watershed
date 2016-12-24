@@ -25,7 +25,7 @@ SECRET_KEY = os.getenv('PLAYQ_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('playq_dev')
 
-ALLOWED_HOSTS = ['playq.io']
+ALLOWED_HOSTS = ['watershed.nthall.com']
 
 
 # Application definition

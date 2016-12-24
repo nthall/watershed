@@ -15,7 +15,7 @@ class Player extends React.Component {
       url,
       data,
       context: this,
-      method: "PUT",
+      method: "PATCH",
       header: this.props.user.header(),
       contentType: 'application/json',
       processData: false,
@@ -34,6 +34,17 @@ class Player extends React.Component {
 }
 
 class BandcampPlayer extends Player {
+  constructor(props) {
+    super(props)
+
+    // extension interactions
+    window.onPlaybackEnd = this.props.playbackEnd
+  }
+
+  componentDidMount() {
+
+  }
+
   render() {
     return (
       <div className="bandcampContainer">
@@ -46,6 +57,11 @@ class BandcampPlayer extends Player {
 class YoutubePlayer extends Player {
   constructor(props) {
     super(props)
+    this.opts = {
+      playerVars: {
+        autoplay: 1
+      }
+    }
   }
 
   render() {
@@ -53,6 +69,7 @@ class YoutubePlayer extends Player {
       <Youtube
         videoId={this.props.item.embed}
         onEnd={this.props.playbackEnd}
+        opts={this.opts}
       />
     )
   }
@@ -71,8 +88,8 @@ class SoundcloudPlayer extends Player {
     return (
       <SoundCloud
         url={this.props.item.uri}
-        opts={this.opts}
         onEnd={this.props.playbackEnd}
+        opts={this.opts}
       />
     )
   }

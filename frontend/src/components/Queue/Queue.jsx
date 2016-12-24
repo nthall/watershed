@@ -14,6 +14,7 @@ export default class Queue extends React.Component {
     this.state = {items: []}
     this.loadItemsFromServer = this.loadItemsFromServer.bind(this)
     this.refreshData = this.refreshData.bind(this)
+    this.playbackEnd = this.playbackEnd.bind(this)
   }
 
   loadItemsFromServer() {
@@ -66,21 +67,23 @@ export default class Queue extends React.Component {
 
   componentDidMount() {
     this.loadItemsFromServer()
-    setInterval(this.refreshData, 5000)
     
     // make sure there's a 0th position item. if not, advance the list!
     let check = $.grep(this.state.items, (item) => { return item.position == 0 })
     if (check.length == 0) {
       this.advanceList()
     }
-
+    
+    this.refreshInterval = setInterval(this.refreshData, 5000)
   }
 
   advanceList() {
     this.setState((prevState, props) => {
       return {
         items: prevState.items.map((item) => {
-          return item.position = item.position - 1
+          item.position = item.position - 1
+          console.log("in advanceList:", item)
+          return item
         })
       }
     })

@@ -23,13 +23,14 @@ export default class App extends React.Component {
     $.ajax({
       context: this,
       method: "POST",
-      url: 'http://playq.io/authtoken/',
-      data: {
+      url: '/authtoken/',
+      data: JSON.stringify({
         username,
         password
-      },
+      }),
+      processData: false,
       dataType: 'json',
-      contentType: 'json',
+      contentType: 'application/json',
       success: this.processLogin
     })
   }

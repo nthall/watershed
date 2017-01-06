@@ -1,4 +1,4 @@
-"""playq URL Configuration
+"""watershed URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.8/topics/http/urls/
@@ -15,11 +15,14 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 
+from rest_framework.authtoken import views
+
 admin.autodiscover()
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^authtoken/', views.obtain_auth_token),
     url(r'', include('api.urls')),
     url(r'', include('player.urls')),
 ]

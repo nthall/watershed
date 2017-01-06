@@ -2,3 +2,6 @@ db.sqlite3
 .venv
 static/
 pid
+app.log
+node_modules/
+frontend/bundles/

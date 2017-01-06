@@ -2,6 +2,12 @@ from __future__ import unicode_literals
 
 from django.conf import settings
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+from rest_framework.authtoken.models import Token
+
+import requests
 
 PLATFORMS = (
     (0, 'Unknown'),
@@ -11,29 +17,82 @@ PLATFORMS = (
 )
 
 
+class ItemManager(models.Manager):
+    def queue(self, user):
+        return self.filter(user=user, position__gte=0)
+
+    def history(self, user):
+        return self.filter(user=user, position__lt=0)
+
+
 class Item(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='items',
                              on_delete=models.CASCADE)
     uri = models.URLField()
     platform = models.IntegerField(choices=PLATFORMS)
-    artist = models.CharField(max_length=255, null=True)
-    title = models.CharField(max_length=255, null=True)
-    referrer = models.URLField()
-    position = models.PositiveIntegerField()
+    artist = models.CharField(max_length=255, blank=True)
+    title = models.CharField(max_length=255, blank=True)
+    embed = models.TextField(blank=True)
+    referrer = models.URLField(blank=True)
+    position = models.IntegerField(null=True)
     added_on = models.DateTimeField(auto_now_add=True)
-    played = models.BooleanField(default=False)
-    played_on = models.DateTimeField()
+    played_on = models.DateTimeField(null=True)
     fave = models.BooleanField(default=False)
     # tags = fields.ArrayField (postgres-specific, so, todo i guess?)
+
+    objects = ItemManager()
 
     class Meta:
         ordering = ('position',)
 
     def save(self, *args, **kwargs):
         '''
-        todo: allow checkbox option to save at front of list
+        todo: allow checkbox option to save at front of list?
         '''
-        queue = Item.objects.get(user=self.user)
-        self.position = len(queue)
+
+        if self.position is None:
+            self.position = Item.objects.queue(self.user).count()
+
+        if (self.platform == 3) and not self.embed:
+            # get soundcloud embed
+            data = {
+                'iframe': True,
+                'format': 'json',
+                'auto_play': False,
+                'url': self.uri
+            }
+            r = requests.get('https://soundcloud.com/oembed', data)
+            response = r.json()
+            self.embed = response['html']
 
         super(Item, self).save(*args, **kwargs)
+
+    def move(self, new_position):
+        '''
+        move an item to a new pos and adjust the rest of the queue around it
+
+        NB: ignore history for now, it'll break shit
+        '''
+        queue = Item.objects.queue(self.user)
+        queue = list(queue)
+        queue.remove(self)
+        queue.insert(new_position, self)
+
+        for i, item in enumerate(queue):
+            item.position = i
+            item.save()
+
+    def move_to_front(self):
+        ''' move an item to position 1 '''
+        self.move(1)
+
+    def move_to_back(self):
+        ''' move an item to the end of the queue '''
+        self.move(Item.objects.queue(self.user).count())
+
+
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    ''' create auth token on user create '''
+    if created:
+        Token.objects.create(user=instance)

@@ -65,6 +65,9 @@ class Item(models.Model):
             response = r.json()
             self.embed = response['html']
 
+        if (self.platform == 1):
+            self.embed = self.embed.replace("tracklist=false", "tracklist=true")  # noqa
+
         super(Item, self).save(*args, **kwargs)
 
     def move(self, new_position):

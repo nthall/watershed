@@ -10,7 +10,7 @@ class Player extends React.Component {
   }
 
   updateServer(data) {
-    const url = `https://playq.io/item/{$this.props.data.id}/`
+    const url = `/item/{$this.props.data.id}/`
     $.ajax({
       url,
       data,
@@ -38,17 +38,22 @@ class BandcampPlayer extends Player {
     super(props)
 
     // extension interactions
-    window.onPlaybackEnd = this.props.playbackEnd
+    window.addEventListener('message', function(data) {
+      if (data.advance) {
+        this.props.playbackEnd()
+      }
+    })
   }
 
-  componentDidMount() {
-
+  load() {
+    window.postMessage({type: "BANDCAMP_LOAD"}, "*")
   }
+
 
   render() {
     return (
       <div className="bandcampContainer">
-        <iframe id="bandcampPlayer" src={this.props.item.embed} />
+        <iframe id="bandcampPlayer" src={this.props.item.embed} onLoad={this.load} />
       </div>
     )
   }

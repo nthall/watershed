@@ -49,8 +49,8 @@ module.exports = {
       },
       {
         // lol one thing at a time, come back to this
-        test: /\.less$/,
-        loaders: ['stlye', 'css', 'less']
+        test: /\.scss$/,
+        loaders: ['style', 'css', 'sass']
       }
     ]
   },

@@ -1,6 +1,7 @@
 import React from 'react'
 import SoundCloud from 'react-soundcloud-widget'
 import Youtube from 'react-youtube'
+import style from './player.scss'
 
 class Player extends React.Component {
   constructor(props) {
@@ -52,7 +53,7 @@ class BandcampPlayer extends Player {
 
   render() {
     return (
-      <div className="bandcampContainer">
+      <div className="bandcampContainer playerContainer">
         <iframe id="bandcampPlayer" src={this.props.item.embed} onLoad={this.load} />
       </div>
     )
@@ -71,11 +72,13 @@ class YoutubePlayer extends Player {
 
   render() {
     return (
-      <Youtube
-        videoId={this.props.item.embed}
-        onEnd={this.props.playbackEnd}
-        opts={this.opts}
-      />
+      <div className="youtubeContainer playerContainer">
+        <Youtube
+          videoId={this.props.item.embed}
+          onEnd={this.props.playbackEnd}
+          opts={this.opts}
+        />
+      </div>
     )
   }
 }
@@ -91,11 +94,13 @@ class SoundcloudPlayer extends Player {
 
   render() {
     return (
-      <SoundCloud
-        url={this.props.item.uri}
-        onEnd={this.props.playbackEnd}
-        opts={this.opts}
-      />
+      <div className="soundCloudContainer playerContainer">
+        <SoundCloud
+          url={this.props.item.uri}
+          onEnd={this.props.playbackEnd}
+          opts={this.opts}
+        />
+      </div>
     )
   }
 }

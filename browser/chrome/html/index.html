@@ -1,11 +1,17 @@
 <!doctype HTML>
 <html>
 <head>
+  <link rel="stylesheet" type="text/css" href="/css/main.css">
   <script type="text/javascript" src="/js/jquery-3.1.1.js"></script>
   <script type="text/javascript" src="/js/main.js"></script>
-  <script type="text/javascript" src="/js/content.js"></script>
 </head>
 <body>
-  <h1> heyo </h1>
+  <div id="content">
+    <form style="display:none;" id="authForm" method="POST">
+      <input type="email" name="username" placeholder="email" />
+      <input type="password" name="password" placeholder="password" />
+      <button type="submit">Login</button>
+    </form>
+  </div>
 </body>
 </html>

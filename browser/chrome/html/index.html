@@ -1,14 +1,17 @@
 <!doctype HTML>
 <html>
 <head>
-<script
-  src="https://code.jquery.com/jquery-3.1.1.js"
-  integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="
-  crossorigin="anonymous"></script>
-
-<script type="text/javascript" src="/js/main.js"></script>
+  <link rel="stylesheet" type="text/css" href="/css/main.css">
+  <script type="text/javascript" src="/js/jquery-3.1.1.js"></script>
+  <script type="text/javascript" src="/js/main.js"></script>
 </head>
 <body>
-  <h1> heyo </h1>
+  <div id="content">
+    <form style="display:none;" id="authForm" method="POST">
+      <input type="email" name="username" placeholder="email" />
+      <input type="password" name="password" placeholder="password" />
+      <button type="submit">Login</button>
+    </form>
+  </div>
 </body>
 </html>

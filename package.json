@@ -1,7 +1,7 @@
 {
-  "name": "playq",
+  "name": "watershed",
   "version": "1.0.0",
-  "description": "player JS for playq",
+  "description": "player JS for watershed",
   "main": "index.js",
   "scripts": {
     "test": "jstest"

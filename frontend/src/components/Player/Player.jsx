@@ -39,9 +39,10 @@ class BandcampPlayer extends Player {
     super(props)
 
     // extension interactions
-    window.addEventListener('message', function(data) {
-      if (data.advance) {
-        this.props.playbackEnd()
+    window.playbackEnd = this.props.playbackEnd
+    window.addEventListener('message', function(event) {
+      if (event.data.advance) {
+        window.playbackEnd()
       }
     })
   }
@@ -54,7 +55,12 @@ class BandcampPlayer extends Player {
   render() {
     return (
       <div className="bandcampContainer playerContainer">
-        <iframe id="bandcampPlayer" src={this.props.item.embed} onLoad={this.load} />
+        <iframe 
+          id="bandcampPlayer" 
+          name="bandcampPlayer"
+          src={this.props.item.embed}
+          onLoad={this.load} 
+        />
       </div>
     )
   }

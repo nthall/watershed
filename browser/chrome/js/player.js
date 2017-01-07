@@ -2,7 +2,11 @@ var port = chrome.runtime.connect({name: "player"});
 
 window.addEventListener("message", function(event) {
   if (event.source != window) {
-    return false;
+    if (event.source == window.frames['bandcampPlayer']) {
+      window.postMessage(event.data, "*");
+    } else {
+      return false;
+    }
   }
 
   port.postMessage(event.data);

@@ -48,52 +48,18 @@ chrome.runtime.onMessage.addListener(function(data) {
 chrome.runtime.onConnect.addListener(function(port) {
   console.assert(port.name == "player");
 
-  var watcher = {
-    advance: false,
-    playing: false,
-    check: function() {
-      if ((this.advance == true) && (this.playing == false)) {
-        port.postMessage({advance: true});
-        clearInterval(this.watching);
-      }
-    },
-    watching: null
-  };
-
-  watcher.watching = setInterval(watcher.check, 3000);
-
-  if (chrome.runtime.lastError) { 
-    console.log(chrome.runtime.lastError);
-  }
-  port.onMessage.addListener(function(data, port) {
-    if (data.type) {
-      switch (data.type) {
-        case "MANUAL_PAUSE":
-          watcher.advance = false;
-          break;
-
-        case "MANUAL_PLAY":
-          watcher.advance = true;
-          break;
-
-        case "BANDCAMP_LOAD":
-          // initialize
-          chrome.tabs.executeScript(port.sender.tab.id,
-          {
-            file: "js/bandcamp.js",
-            allFrames: true
-          });
-
-
-          chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
-            if (changeInfo.audible) {
-              watcher.playing = changeInfo.audible;
-            }
-          });
-          break;
-
-        default:
-          return false;
+  port.onMessage.addListener(function(data, origin) {
+    if (data.type == "BANDCAMP_LOAD") {
+      chrome.tabs.executeScript(origin.sender.tab.id,
+      {
+        file: "js/bandcamp.js",
+        allFrames: true
+      });
+    } else {
+      // all that's left is to figure out how to get the message from the
+      // bandcamp frame to the player frame successfully! argh!!
+      if (data.advance) {
+        port.postMessage(data);
       }
     }
   });

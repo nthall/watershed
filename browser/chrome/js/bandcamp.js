@@ -1,17 +1,31 @@
-play = document.getElementById("big_play_button");
+var port = chrome.runtime.connect({name: "player"});
+var advance = function() {
+  window.parent.postMessage({advance: true, sender: 'bandcamp'}, "*");
+}
+
+var play = document.getElementById("big_play_button");
 
 if (play) {  // only run logic in bandcamp iframe
-  tracklist = document.getElementById("tracklist_ul");
+  var tracklist = document.getElementById("tracklist_ul");
 
   if (tracklist) {
-    loaded_track = document.getElementById("currenttitle_tracknum");
+    var loaded_track = document.getElementById("currenttitle_tracknum");
     if (loaded_track.text != "1.") {
-
+      tracklist.children[0].click();
     }
-  }
 
-  play.click(); // autoplay
- 
-  player = document.getElementById("player");
-  audio = document.getElementsByTagName('audio');
+    var last_track = tracklist.children[tracklist.children.length - 1];
+    var observer = new MutationObserver(function(mutations) {
+      mutations.forEach(function(mutation) {
+        if (mutation.target.classList.contains("currenttrack")) {
+          document.getElementsByTagName('audio')[0].addEventListener('ended', advance);
+        }
+      })
+    });
+
+    observer.observe(last_track, {attributes: true, attributeFilter: ["class"]});
+  } else {
+    play.click(); // autoplay
+    document.getElementsByTagName('audio')[0].addEventListener('ended', advance);
+  }
 }

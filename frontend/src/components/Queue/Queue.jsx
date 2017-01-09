@@ -93,11 +93,8 @@ export default class Queue extends React.Component {
     })
   }
 
-  playbackEnd(callback=false) {
+  playbackEnd() {
     this.advanceList()
-    if (callback) {
-      callback()
-    }
   }
 
   render() {

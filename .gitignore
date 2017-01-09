@@ -5,3 +5,4 @@ pid
 app.log
 node_modules/
 frontend/bundles/
+webpack-stats.json

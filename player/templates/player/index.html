@@ -1,8 +1,10 @@
 {% load render_bundle from webpack_loader %}
+{% load static %}
 <!doctype html>
 <html>
 <head>
-
+  <link rel="shortcut icon" type="image/x-icon" href="{% static '/player/favicon-music.png' %}" />
+  <title>Watershed Music</title>
 </head>
 <body>
   <div id="container">

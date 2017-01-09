@@ -8,6 +8,8 @@ import {
   getPlayer
 } from '../Player/Player'
 
+import style from './queue.scss'
+
 export default class Queue extends React.Component {
   constructor(props) {
     super(props)

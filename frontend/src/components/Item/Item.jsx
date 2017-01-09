@@ -1,4 +1,6 @@
-const React = require('react')
+import React from 'react'
+
+import style from './item.scss'
 
 export default class Item extends React.Component {
   constructor(props) {
@@ -10,7 +12,7 @@ export default class Item extends React.Component {
 
   render() {
     return (
-      <li>{this.props.data.artist}{this.state.sep}{this.props.data.title}</li>
+      <li className="queueItem platform{this.props.data.platform}">{this.props.data.artist}{this.state.sep}{this.props.data.title}</li>
     )
   }
 }

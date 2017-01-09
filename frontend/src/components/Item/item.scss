@@ -1,0 +1,35 @@
+.queueItem{
+    height: 2em;
+    border-top: 1px solid gray;
+    border-bottom: 1px solid gray;
+    border-collapse: collapse;
+}
+
+.platform1 {
+    &:before {
+        color: #ccc;
+        font: 'FontAwesome';
+        content: "\f2d5";
+    }
+}
+
+.platform2 {
+    &:before {
+        color: #ccc;
+        font: 'FontAwesome';
+        content: "\f1be";
+    }
+}
+
+.platform3 {
+    &:before {
+        color: #ccc;
+        font: 'FontAwesome';
+        content: "\f167";
+    }
+}
+
+span.delete {
+    &:hover {
+    }
+}

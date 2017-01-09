@@ -42,6 +42,9 @@ class Item(models.Model):
 
     objects = ItemManager()
 
+    def __unicode__(self):
+        return " - ".join([self.user, self.artist, self.title])
+
     class Meta:
         ordering = ('position',)
 

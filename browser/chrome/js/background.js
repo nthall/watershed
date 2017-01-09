@@ -4,6 +4,10 @@ var onSave = function(data, textStatus, jqXHR) {
 
 var onErr = function(jqXHR, textStatus, errorThrown) {
   console.log(errorThrown, textStatus, jqXHR); 
+  if (jqXHR.status === 401) {
+    // some kind of error message would be good
+    chrome.storage.local.clear();
+  }
 };
 
 var save = function(data) {

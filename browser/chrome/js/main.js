@@ -7,7 +7,6 @@ window.onload = function () {
     if (!items.token) {
       $("#authForm").css('display', 'block');
     } else {
-      console.log(items.token);
       chrome.runtime.onMessage.addListener(function(data, sender, sendResponse) {
         if (chrome.runtime.lastError) {
           console.log(chrome.runtime.lastError.message);
@@ -25,7 +24,7 @@ window.onload = function () {
   });
   $('#authForm').on('submit', function(event) {
     event.preventDefault();
-    $.post("http://playq.io/authtoken/",
+    $.post("http://watershed.nthall.com/authtoken/",
       $(this).serialize(),
       function (response) {
         if (response.token) {

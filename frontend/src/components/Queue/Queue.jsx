@@ -21,7 +21,9 @@ export default class Queue extends React.Component {
     $.ajax({
       context: this,
       url: '/item/',
-      header: this.props.user.header(),
+      headers: {
+        Authorization: this.props.user.header()
+      },
       cache: false,
       dataType: 'json',
       method: 'GET',
@@ -52,7 +54,9 @@ export default class Queue extends React.Component {
 
     $.ajax({
       context: this,
-      header: this.props.user.header(),
+      headers: {
+        Authorization: this.props.user.header()
+      },
       url: '/item/',
       method: 'PATCH',
       cache: false,

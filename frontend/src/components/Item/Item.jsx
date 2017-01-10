@@ -6,13 +6,19 @@ export default class Item extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      sep: (this.props.data.artist) ? " - " : ""
+      sep: (this.props.data.artist) ? " - " : "",
+      iconClass: `platform${this.props.data.platform}`
     }
   }
 
   render() {
     return (
-      <li className="queueItem platform{this.props.data.platform}">{this.props.data.artist}{this.state.sep}{this.props.data.title}</li>
+      <li className="queueItem">
+        <span aria-hidden="true" className={this.state.iconClass} />
+				<span className="info">
+					{this.props.data.artist}{this.state.sep}{this.props.data.title}
+				</span>
+      </li>
     )
   }
 }

@@ -1,35 +1,41 @@
+@import "../../colors";
+
 .queueItem{
-    height: 2em;
-    border-top: 1px solid gray;
-    border-bottom: 1px solid gray;
-    border-collapse: collapse;
+    border-bottom: 1px solid $base1;
+	padding-left: 2em;
+	padding-top: .5em;
+	padding-bottom: .5em;
+
+	span.info {
+		margin-left: 1em;
+	}
+
+    &:first-child {
+        border-top: 1px solid $base1;
+    }
+	&:hover {
+		background-color: $base2;
+	}
 }
 
-.platform1 {
-    &:before {
-        color: #ccc;
-        font: 'FontAwesome';
-        content: "\f2d5";
-    }
+.platform-icon {
+    color: $base1;
+    font-family: 'FontAwesome';
+	width: 1.5em;
+	text-align: center;
 }
 
-.platform2 {
-    &:before {
-        color: #ccc;
-        font: 'FontAwesome';
-        content: "\f1be";
-    }
+span.platform1::before {
+	@extend .platform-icon;
+    content: "\f2d5";
 }
 
-.platform3 {
-    &:before {
-        color: #ccc;
-        font: 'FontAwesome';
-        content: "\f167";
-    }
+span.platform2::before {
+	@extend .platform-icon;
+    content: "\f167";
 }
 
-span.delete {
-    &:hover {
-    }
+span.platform3::before {
+	@extend .platform-icon;
+    content: "\f1be";
 }

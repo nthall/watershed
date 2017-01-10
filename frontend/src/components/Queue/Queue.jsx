@@ -71,6 +71,30 @@ export default class Queue extends React.Component {
     })
   }
 
+  deleteItem(id) {
+    target = $.grep(this.state.items, (item) => { return item.id == id })
+
+    $.ajax({
+      context: this,
+      headers: {
+        Authorization: this.props.user.header()
+      },
+      url: '/item/',
+      method: 'DELETE',
+      cache: false,
+      dataType: 'json',
+      contentType: 'application/json',
+      data: JSON.stringify(payload),
+      processData: false,
+      success: function() {
+        // re-number the list? or just let the server handle that?
+        this.refreshData() 
+      },
+      error: {} // todo
+    })
+
+  }
+
   componentDidMount() {
     this.loadItemsFromServer()
     

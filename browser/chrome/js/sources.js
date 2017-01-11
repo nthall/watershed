@@ -16,7 +16,6 @@ var searchParams = function() {
     obj[ decodeURIComponent( pair[0] ) ] = decodeURIComponent( pair[1] )
   }
 
-  console.log(obj)
   return obj
 }
 
@@ -37,7 +36,7 @@ var bandcamp = function() {
       .innerHTML.trim();
     const artist = document.querySelector("span[itemprop='byArtist'] > a")
       .innerHTML.trim();
-    const embed = document.querySelector("meta[property='og:video']").content
+    const embed = document.querySelector("meta[property='og:video:secure_url']").content
     data = {
       artist,
       title,
@@ -92,7 +91,6 @@ for (var i=1;i<sources.length;i++) {
   if (data !== false) {
     data['platform'] = i
     data['uri'] = window.location.href
-    data['embed'] = ''
     data['action'] = 'save'
     chrome.runtime.sendMessage(data)
     break

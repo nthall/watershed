@@ -60,8 +60,6 @@ chrome.runtime.onConnect.addListener(function(port) {
         allFrames: true
       });
     } else {
-      // all that's left is to figure out how to get the message from the
-      // bandcamp frame to the player frame successfully! argh!!
       if (data.advance) {
         port.postMessage(data);
       }

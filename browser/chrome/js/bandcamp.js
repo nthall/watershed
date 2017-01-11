@@ -15,15 +15,19 @@ if (play) {  // only run logic in bandcamp iframe
     }
 
     var last_track = tracklist.children[tracklist.children.length - 1];
-    var observer = new MutationObserver(function(mutations) {
-      mutations.forEach(function(mutation) {
-        if (mutation.target.classList.contains("currenttrack")) {
-          document.getElementsByTagName('audio')[0].addEventListener('ended', advance);
-        }
-      })
-    });
+    if (last_track == loaded_track) {
+      document.getElementsByTagName('audio')[0].addEventListener('ended', advance);
+    } else {
+      var observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          if (mutation.target.classList.contains("currenttrack")) {
+            document.getElementsByTagName('audio')[0].addEventListener('ended', advance);
+          }
+        })
+      });
 
-    observer.observe(last_track, {attributes: true, attributeFilter: ["class"]});
+      observer.observe(last_track, {attributes: true, attributeFilter: ["class"]});
+    }
   } else {
     play.click(); // autoplay
     document.getElementsByTagName('audio')[0].addEventListener('ended', advance);

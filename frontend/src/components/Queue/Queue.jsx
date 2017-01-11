@@ -8,6 +8,8 @@ import {
   getPlayer
 } from '../Player/Player'
 
+import style from './queue.scss'
+
 export default class Queue extends React.Component {
   constructor(props) {
     super(props)
@@ -21,7 +23,9 @@ export default class Queue extends React.Component {
     $.ajax({
       context: this,
       url: '/item/',
-      header: this.props.user.header(),
+      headers: {
+        Authorization: this.props.user.header()
+      },
       cache: false,
       dataType: 'json',
       method: 'GET',
@@ -52,7 +56,9 @@ export default class Queue extends React.Component {
 
     $.ajax({
       context: this,
-      header: this.props.user.header(),
+      headers: {
+        Authorization: this.props.user.header()
+      },
       url: '/item/',
       method: 'PATCH',
       cache: false,
@@ -63,6 +69,30 @@ export default class Queue extends React.Component {
       success: this.loadItemsFromServer,
       error: function() { console.log('aw hell', payload) }.bind(this)
     })
+  }
+
+  deleteItem(id) {
+    target = $.grep(this.state.items, (item) => { return item.id == id })
+
+    $.ajax({
+      context: this,
+      headers: {
+        Authorization: this.props.user.header()
+      },
+      url: '/item/',
+      method: 'DELETE',
+      cache: false,
+      dataType: 'json',
+      contentType: 'application/json',
+      data: JSON.stringify(payload),
+      processData: false,
+      success: function() {
+        // re-number the list? or just let the server handle that?
+        this.refreshData() 
+      },
+      error: {} // todo
+    })
+
   }
 
   componentDidMount() {
@@ -89,11 +119,8 @@ export default class Queue extends React.Component {
     })
   }
 
-  playbackEnd(callback=false) {
+  playbackEnd() {
     this.advanceList()
-    if (callback) {
-      callback()
-    }
   }
 
   render() {

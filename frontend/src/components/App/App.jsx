@@ -3,6 +3,8 @@ import User from '../../classes/User'
 import Queue from '../Queue/Queue'
 import LoginForm from '../LoginForm/LoginForm'
 
+import style from './app.scss'
+
 export default class App extends React.Component {
   constructor(props) {
     super(props)

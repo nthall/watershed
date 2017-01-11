@@ -1,0 +1,41 @@
+@import "../../colors";
+
+.queueItem{
+    border-bottom: 1px solid $base1;
+	padding-left: 2em;
+	padding-top: .5em;
+	padding-bottom: .5em;
+
+	span.info {
+		margin-left: 1em;
+	}
+
+    &:first-child {
+        border-top: 1px solid $base1;
+    }
+	&:hover {
+		background-color: $base2;
+	}
+}
+
+.platform-icon {
+    color: $base1;
+    font-family: 'FontAwesome';
+	width: 1.5em;
+	text-align: center;
+}
+
+span.platform1::before {
+	@extend .platform-icon;
+    content: "\f2d5";
+}
+
+span.platform2::before {
+	@extend .platform-icon;
+    content: "\f167";
+}
+
+span.platform3::before {
+	@extend .platform-icon;
+    content: "\f1be";
+}

@@ -36,11 +36,14 @@ class Item(models.Model):
     referrer = models.URLField(blank=True)
     position = models.IntegerField(null=True)
     added_on = models.DateTimeField(auto_now_add=True)
-    played_on = models.DateTimeField(null=True)
+    played_on = models.DateTimeField(null=True, default=None)
     fave = models.BooleanField(default=False)
     # tags = fields.ArrayField (postgres-specific, so, todo i guess?)
 
     objects = ItemManager()
+
+    def __unicode__(self):
+        return " - ".join([self.user.__unicode__(), self.artist, self.title])
 
     class Meta:
         ordering = ('position',)

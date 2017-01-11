@@ -4,6 +4,8 @@ import logging
 
 from django.http import Http404
 from django.contrib.auth import get_user_model
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 
 from rest_framework import permissions, status
 from rest_framework.generics import ListCreateAPIView
@@ -29,6 +31,7 @@ class Queue(ListCreateAPIView):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+    @method_decorator(csrf_exempt)
     def post(self, request, format=None):
         data = {"user": request.user.pk}
         data['platform'] = int(request.data.get('platform'))

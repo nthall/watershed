@@ -5,7 +5,7 @@ export default class User {
 
   header() {
     return (
-      "Authorization: Token " + this.data.token
+      "Token " + this.data.token
     )
   }
 }

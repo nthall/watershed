@@ -46,7 +46,7 @@ window.onload = function () {
       emojis = ['\uD83C\uDFA4', '\uD83C\uDFA7', '\uD83C\uDFBC', '\uD83C\uDFB9', '\uD83C\uDFB7', '\uD83C\uDFBA', '\uD83C\uDFB8', '\uD83C\uDFBB', '\uD83D\uDC83\uD83C\uDFFF', '\uD83D\uDC4F', '\u26A1\uFE0F', '\uD83D\uDCBF', '\uD83C\uDF99']; 
       emoji1 = emojis[Math.floor(Math.random() * emojis.length)];
       emoji2 = emojis[Math.floor(Math.random() * emojis.length)];
-      $('#content').text(emoji1 + " Saved! " + emoji2)
+      $('#content').text(emoji1 + "   Saved! " + emoji2)
     }
   });
 };

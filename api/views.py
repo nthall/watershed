@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 
 import logging
 
-from django.http import Http404
+from django.http import Http404, HttpResponseForbidden
 from django.contrib.auth import get_user_model
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
@@ -70,3 +70,18 @@ class ItemDetail(BulkUpdateModelMixin, ListCreateAPIView):
 
     def patch(self, request, *args, **kwargs):
         return self.partial_bulk_update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        try:
+            # todo: this needs to be cleaned up several ways lol
+            user = User.objects.get(pk=request.user.id)
+        except:
+            return HttpResponseForbidden()
+
+        try:
+            item_id = request.data.get("id")
+            item = Item.objects.get(pk=item_id, user=user)
+            item.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Item.DoesNotExist:
+            raise Http404

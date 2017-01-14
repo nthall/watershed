@@ -17,7 +17,8 @@ export default class Queue extends React.Component {
     this.state = {items: []}
     this.loadItemsFromServer = this.loadItemsFromServer.bind(this)
     this.refreshData = this.refreshData.bind(this)
-    this.playbackEnd = this.playbackEnd.bind(this)
+    this.advanceList = this.advanceList.bind(this)
+    this.deleteItem = this.deleteItem.bind(this)
   }
 
   loadItemsFromServer() {
@@ -72,9 +73,7 @@ export default class Queue extends React.Component {
     })
   }
 
-  deleteItem(id) {
-    target = $.grep(this.state.items, (item) => { return item.id == id })
-
+  deleteItem(item) {
     $.ajax({
       context: this,
       headers: {
@@ -85,12 +84,9 @@ export default class Queue extends React.Component {
       cache: false,
       dataType: 'json',
       contentType: 'application/json',
-      data: JSON.stringify(payload),
+      data: JSON.stringify({id: item.id}),
       processData: false,
-      success: function() {
-        // re-number the list? or just let the server handle that?
-        this.refreshData() 
-      },
+      success: {},
       error: {} // todo
     })
 
@@ -105,7 +101,7 @@ export default class Queue extends React.Component {
       this.advanceList()
     }
     
-    this.refreshInterval = setInterval(this.refreshData, 5000)
+    this.refreshInterval = setInterval(this.loadItemsFromServer, 5000)
   }
 
   advanceList() {
@@ -113,21 +109,16 @@ export default class Queue extends React.Component {
       return {
         items: prevState.items.map((item) => {
           item.position = item.position - 1
-          console.log("in advanceList:", item)
           return item
         })
       }
-    })
-  }
-
-  playbackEnd() {
-    this.advanceList()
+    }, this.refreshData)
   }
 
   render() {
     let Items = this.state.items.map((item) => {
       if (item.position > 0) {
-        return <Item data={item} key={item.id} />
+        return <Item data={item} key={item.id} deleteItem={this.deleteItem} />
       }
     })
 
@@ -136,7 +127,7 @@ export default class Queue extends React.Component {
     if (typeof currentItem !== 'undefined') {
       Player = getPlayer({
         item: currentItem, 
-        playbackEnd: this.playbackEnd,
+        playbackEnd: this.advanceList,
         user: this.props.user
       })
     }
@@ -144,8 +135,8 @@ export default class Queue extends React.Component {
     return (
       <div id="queueContainer">
         <div id="controls">
-          <button className="btn control" id="skipBtn" onclick={advanceList}>
-            <FontAwesome name="step-forward" size="4x" />
+          <button className="btn control" id="skipBtn" onClick={this.advanceList}>
+            <FontAwesome name="step-forward" size="3x" ariaLabel="Play Next Item" fixedWidth />
           </button>
         </div>
         {Player || ''}

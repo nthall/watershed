@@ -1,4 +1,21 @@
+@import "../../colors";
+
 ul {
     list-style: none;
     padding: 0px;
+}
+
+#controls {
+  float: right;
+  &:after {
+    clear: both;
+  }
+  &:hover {
+    cursor: pointer;
+  }
+
+  #skipBtn {
+    color: $violet;
+  }
+
 }

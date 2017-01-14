@@ -16,4 +16,14 @@
 	&:hover {
 		background-color: $base2;
 	}
+
+
+    .fa-trash {
+        margin-right: 2em;
+
+        &:hover {
+            color: $magenta;
+        }
+    }
+
 }

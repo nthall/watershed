@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 
 from django.conf import settings
 from django.db import models
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 
 from rest_framework.authtoken.models import Token
@@ -102,3 +102,14 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
     ''' create auth token on user create '''
     if created:
         Token.objects.create(user=instance)
+
+
+@receiver(pre_delete, sender=Item)
+def squash_list(sender, instance=None, **kwargs):
+    '''  when deleting, reorder queue to avoid holes that trip up react '''
+    items = Item.objects.filter(position__gt=instance.position,
+                                user=instance.user
+                                )
+    for i in items:
+        i.position = i.position - 1
+        i.save()

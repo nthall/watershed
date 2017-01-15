@@ -4,7 +4,7 @@
     "version": "0.1",
     "browser_action": {
         "default_popup": "html/index.html",
-        "default_title": "PlayQ",
+        "default_title": "Save to Watershed",
         "default_icon": "media/favicon-music.png"
     },
     "background": {

@@ -1,4 +1,5 @@
 import React from 'react'
+import FontAwesome from 'react-fontawesome'
 import Item from '../Item/Item'
 import User from '../../classes/User'
 import { 
@@ -142,6 +143,11 @@ export default class Queue extends React.Component {
 
     return (
       <div id="queueContainer">
+        <div id="controls">
+          <button className="btn control" id="skipBtn" onclick={advanceList}>
+            <FontAwesome name="step-forward" size="4x" />
+          </button>
+        </div>
         {Player || ''}
         <ul>
           {Items}

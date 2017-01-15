@@ -1,4 +1,4 @@
-var port = chrome.runtime.connect({name: "player"});
+var port = browser.runtime.connect({name: "player"});
 
 window.addEventListener("message", function(event) {
   if (event.source != window) {

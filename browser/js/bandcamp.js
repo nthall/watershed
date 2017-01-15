@@ -1,4 +1,4 @@
-var port = chrome.runtime.connect({name: "player"});
+var port = browser.runtime.connect({name: "player"});
 var advance = function() {
   window.parent.postMessage({advance: true, sender: 'bandcamp'}, "*");
 }

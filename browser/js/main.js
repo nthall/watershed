@@ -1,15 +1,15 @@
 window.onload = function () {
-  chrome.storage.local.get('token', function (items) {
-    if (chrome.runtime.lastError) {
-      console.log(chrome.runtime.lastError.message);
+  browser.storage.local.get('token', function (items) {
+    if (browser.runtime.lastError) {
+      console.log(browser.runtime.lastError.message);
     }
 
     if (!items.token) {
       $("#authForm").css('display', 'block');
     } else {
-      chrome.runtime.onMessage.addListener(function(data, sender, sendResponse) {
-        if (chrome.runtime.lastError) {
-          console.log(chrome.runtime.lastError.message);
+      browser.runtime.onMessage.addListener(function(data, sender, sendResponse) {
+        if (browser.runtime.lastError) {
+          console.log(browser.runtime.lastError.message);
         }
 
         if (data.action == "get_token") {
@@ -18,7 +18,7 @@ window.onload = function () {
       });
 
       $('#content').html("<h2>Saving...</h2>");
-      chrome.tabs.executeScript({file: "js/sources.js"});
+      browser.tabs.executeScript({file: "/js/sources.js"});
       return true;
     }
   });
@@ -28,7 +28,7 @@ window.onload = function () {
       $(this).serialize(),
       function (response) {
         if (response.token) {
-          chrome.storage.local.set(response);
+          browser.storage.local.set(response);
           $("#content").html("<p>Login success!</p>");
         } else {
           console.log("login fail");
@@ -37,9 +37,9 @@ window.onload = function () {
       'json'
     );
   });
-  chrome.runtime.onMessage.addListener(function(data) {
-    if (chrome.runtime.lastError) { 
-      console.log(chrome.runtime.lastError);
+  browser.runtime.onMessage.addListener(function(data) {
+    if (browser.runtime.lastError) { 
+      console.log(browser.runtime.lastError);
     }
     if (data.action == 'saved') {
       //  '🎤', '🎧', '🎼', '🎹', '🎷', '🎺', '🎸', '🎻', '💃🏿', '👏', '⚡️', '💿', '🎙'

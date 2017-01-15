@@ -92,7 +92,7 @@ for (var i=1;i<sources.length;i++) {
     data['platform'] = i
     data['uri'] = window.location.href
     data['action'] = 'save'
-    chrome.runtime.sendMessage(data)
+    browser.runtime.sendMessage(data)
     break
   }
 }

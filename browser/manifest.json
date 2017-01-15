@@ -4,7 +4,7 @@
     "version": "0.1",
     "browser_action": {
         "default_popup": "html/index.html",
-        "default_title": "PlayQ",
+        "default_title": "Save to Watershed",
         "default_icon": "media/favicon-music.png"
     },
     "background": {
@@ -20,7 +20,7 @@
     "content_scripts": [
         {
             "matches": ["*://watershed.nthall.com/"],
-            "js": ["js/player.js"]
+            "js": ["/js/browser-polyfill.min.js", "/js/player.js"]
         }
     ]
 }

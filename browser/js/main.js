@@ -18,6 +18,7 @@ window.onload = function () {
       });
 
       $('#content').html("<h2>Saving...</h2>");
+      browser.tabs.executeScript({file: "/js/browser-polyfill.min.js"});
       browser.tabs.executeScript({file: "/js/sources.js"});
       return true;
     }

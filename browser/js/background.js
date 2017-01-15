@@ -54,6 +54,11 @@ browser.runtime.onConnect.addListener(function(port) {
 
   port.onMessage.addListener(function(data, origin) {
     if (data.type == "BANDCAMP_LOAD") {
+      browser.tabs.executeScript(origin.sender.tab.id, 
+      {
+        file: "/js/browser-polyfill.min.js"},
+        allFrames: true
+      });
       browser.tabs.executeScript(origin.sender.tab.id,
       {
         file: "/js/bandcamp.js",

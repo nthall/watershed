@@ -140,9 +140,11 @@ export default class Queue extends React.Component {
           </button>
         </div>
         {Player || ''}
-        <ul>
-          {Items}
-        </ul>
+        <div id="listContainer">
+          <ul>
+            {Items}
+          </ul>
+        </div>
       </div>
     )
   }

@@ -94,6 +94,7 @@ class SoundcloudPlayer extends Player {
     super(props)
     this.opts = {
       visual: true,
+			auto_play: true
     }
 
   }

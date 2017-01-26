@@ -1,6 +1,7 @@
 @import "../../colors";
 
 .queueItem{
+    height: 2em;
     border-bottom: 1px solid $base1;
 	padding-left: 2em;
 	padding-top: .5em;
@@ -17,13 +18,46 @@
 		background-color: $base2;
 	}
 
-
-    .fa-trash {
+    .itemControls {
         margin-right: 2em;
+        float: right;
+        &:after {
+            clear: both;
+        }
+        button {
+            display: inline-block;
+            margin-top: 0;
+            margin-bottom: 0;
+            &:hover {
+                background-color: $base03;
+            }
+        }
+    }
 
-        &:hover {
+    .delete:hover {
+        .icon {
             color: $magenta;
         }
     }
+
+    .playNow:hover {
+        .icon {
+            color: $cyan;
+        }
+    }
+
+    .playNext:hover {
+        .icon {
+            color: $yellow;
+        }
+    }
+
+    .moveUp:hover {
+        .icon {
+            color: $blue;
+        }
+    }
+
+
 
 }

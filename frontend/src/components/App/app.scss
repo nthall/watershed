@@ -10,6 +10,9 @@ button {
     color: $base00;
     background-color: $base2;
     border: 1px solid $base1;
+    &:focus {
+        outline: none;
+    }
 }
 
 .icon {

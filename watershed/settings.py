@@ -130,6 +130,8 @@ PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.BCryptPasswordHasher',
 ]
 
+PASSWORD_MIN_LENGTH = 8
+
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -206,6 +208,11 @@ LOGGING = {
             'handlers': [default_handler],
             'level': 'ERROR',
             'propagate': True,
-        }
+        },
+        'customauth': {
+            'handlers': [default_handler],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
     }
 }

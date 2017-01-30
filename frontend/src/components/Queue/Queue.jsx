@@ -15,26 +15,40 @@ export default class Queue extends React.Component {
   constructor(props) {
     super(props)
     this.state = {items: []}
+    this.updateServer = false  // set true to send update to server
+    this.refreshInterval = 5000
+    
     this.loadItemsFromServer = this.loadItemsFromServer.bind(this)
-    this.refreshData = this.refreshData.bind(this)
     this.advanceList = this.advanceList.bind(this)
+    this.moveItem = this.moveItem.bind(this)
+
+    this.refreshData = this.refreshData.bind(this)
     this.deleteItem = this.deleteItem.bind(this)
   }
 
   loadItemsFromServer() {
-    $.ajax({
-      context: this,
+    //todo: only add new items??? idfk
+    const auth = this.props.user.header()
+    const deferred = $.ajax({
       url: '/item/',
       headers: {
-        Authorization: this.props.user.header()
+        Authorization: auth
       },
       cache: false,
       dataType: 'json',
-      method: 'GET',
-      success: function(data) {
-        this.setState({items: data})
-      }.bind(this)
+      method: 'GET'
     })
+
+    deferred.done(function(data) {
+      if (this.updateServer) {
+        console.log("update in progress, don't load new server data yet")
+      } else {
+        console.log("now update")
+        this.setState({items: data})
+      }
+    }.bind(this))
+
+    return deferred
   } 
 
   refreshData() {
@@ -56,10 +70,10 @@ export default class Queue extends React.Component {
       return output
     })
 
-    $.ajax({
-      context: this,
+    const auth = this.props.user.header()
+    const deferred = $.ajax({
       headers: {
-        Authorization: this.props.user.header()
+        Authorization: auth
       },
       url: '/item/',
       method: 'PATCH',
@@ -68,16 +82,20 @@ export default class Queue extends React.Component {
       contentType: 'application/json',
       data: JSON.stringify(payload),
       processData: false,
-      success: this.loadItemsFromServer,
-      error: function() { console.log('aw hell', payload) }.bind(this)
     })
+
+    deferred.done(function() { console.log("refreshData.done"); this.updateServer = false; this.loadItemsFromServer() }.bind(this))
+
+    console.log('returning from refreshData')
+    return deferred
   }
 
   deleteItem(item) {
-    $.ajax({
-      context: this,
+    this.updateServer = true
+    const auth = this.props.user.header()
+    const deferred = $.ajax({
       headers: {
-        Authorization: this.props.user.header()
+        Authorization: auth
       },
       url: '/item/',
       method: 'DELETE',
@@ -85,11 +103,40 @@ export default class Queue extends React.Component {
       dataType: 'json',
       contentType: 'application/json',
       data: JSON.stringify({id: item.id}),
-      processData: false,
-      success: {},
-      error: {} // todo
+      processData: false
     })
+    const del = item
 
+    this.setState( (prevState, props) => {
+      return {
+        items: prevState.items.filter( (item) => {
+          return (item !== del)
+        })
+      }
+    })
+  }
+
+  moveItem(target, newpos) {
+    this.updateServer = true
+    const oldpos = target.position
+    this.setState( (prevState, props) => { 
+      return {
+        items: prevState.items.map((item) => {
+          if (item === target) {
+            item.position = newpos
+          } else if (oldpos > newpos) {
+            if ((item.position >= newpos) && (item.position < oldpos)) {
+              item.position =  item.position + 1
+            }
+          } else {
+            if ((item.position <= newpos) && (item.position > oldpos)) {
+              item.position =  item.position - 1
+            }
+          }
+          return item
+        })
+      }
+    })
   }
 
   componentDidMount() {
@@ -101,10 +148,17 @@ export default class Queue extends React.Component {
       this.advanceList()
     }
     
-    this.refreshInterval = setInterval(this.loadItemsFromServer, 5000)
+    setInterval(this.loadItemsFromServer, this.refreshInterval)
+  }
+
+  componentDidUpdate() {
+    if (this.updateServer) {
+      this.refreshData()
+    }
   }
 
   advanceList() {
+    this.updateServer = true
     this.setState((prevState, props) => {
       return {
         items: prevState.items.map((item) => {
@@ -112,15 +166,13 @@ export default class Queue extends React.Component {
           return item
         })
       }
-    }, this.refreshData)
+    })
   }
 
   render() {
-    let Items = this.state.items.map((item) => {
-      if (item.position > 0) {
-        return <Item data={item} key={item.id} deleteItem={this.deleteItem} />
-      }
-    })
+    let Items = this.state.items.filter( (item) => { return item.position > 0 } ).map( (item) => {
+      return <Item data={item} key={item.id} deleteItem={this.deleteItem} moveItem={this.moveItem} />
+    }).sort(function(a,b) { return a.position - b.position })
 
     let currentItem = this.state.items.filter((item) => { return item.position == 0 })[0]
     let Player = false
@@ -136,7 +188,7 @@ export default class Queue extends React.Component {
       <div id="queueContainer">
         <div id="controls">
           <button className="btn control" id="skipBtn" onClick={this.advanceList}>
-            <FontAwesome name="step-forward" size="3x" ariaLabel="Play Next Item" fixedWidth />
+            <FontAwesome name="fast-forward" size="3x" ariaLabel="Play Next Item" fixedWidth />
           </button>
         </div>
         {Player || ''}

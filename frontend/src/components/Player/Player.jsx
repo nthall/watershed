@@ -97,6 +97,45 @@ class SoundcloudPlayer extends Player {
 			auto_play: true
     }
 
+    this.widget = null
+    this.lastSoundIndex = null
+    this.currentSoundIndex = 0
+    this.getWidgetInterval = null
+
+    this.playbackEnd = this.playbackEnd.bind(this)
+    this.getWidget = this.getWidget.bind(this)
+    this.componentDidMount = this.componentDidMount.bind(this)
+  }
+
+  playbackEnd() {
+    if (this.lastSoundIndex === 0) {
+      this.props.playbackEnd()
+    } else {
+      this.widget.getCurrentSoundIndex( (response) => {
+        if (response === this.lastSoundIndex) {
+          this.props.playbackEnd()
+        } else {
+          this.currentSoundIndex = response
+        }
+      })
+    }
+  }
+
+  getWidget() {
+    try {
+      this.widget = window.SC.Widget('react-sc-widget')
+      this.widget.getSounds( (response) => {
+        this.lastSoundIndex = response.length - 1
+      })
+    } catch (e) { console.log('dang widget', e) }
+
+    if ((this.widget !== null) && (this.lastSoundIndex !== null)) {
+      clearInterval(this.getWidgetInterval)
+    }
+  }
+
+  componentDidMount() {
+    this.getWidgetInterval = setInterval(this.getWidget, 10000)
   }
 
   render() {
@@ -104,7 +143,7 @@ class SoundcloudPlayer extends Player {
       <div className="soundCloudContainer playerContainer">
         <SoundCloud
           url={this.props.item.uri}
-          onEnd={this.props.playbackEnd}
+          onEnd={this.playbackEnd}
           opts={this.opts}
         />
       </div>

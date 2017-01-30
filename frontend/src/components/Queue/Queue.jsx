@@ -41,9 +41,7 @@ export default class Queue extends React.Component {
 
     deferred.done(function(data) {
       if (this.updateServer) {
-        console.log("update in progress, don't load new server data yet")
       } else {
-        console.log("now update")
         this.setState({items: data})
       }
     }.bind(this))
@@ -84,9 +82,8 @@ export default class Queue extends React.Component {
       processData: false,
     })
 
-    deferred.done(function() { console.log("refreshData.done"); this.updateServer = false; this.loadItemsFromServer() }.bind(this))
+    deferred.done(function() { this.updateServer = false; this.loadItemsFromServer() }.bind(this))
 
-    console.log('returning from refreshData')
     return deferred
   }
 

@@ -4,6 +4,7 @@ import logging
 
 from django.http import Http404, HttpResponseForbidden
 from django.contrib.auth import get_user_model
+from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 
@@ -19,6 +20,7 @@ from serializers import ItemSerializer
 User = get_user_model()
 
 logger = logging.getLogger(__name__)
+jslogger = logging.getLogger('js')
 
 
 class Queue(ListCreateAPIView):
@@ -85,3 +87,24 @@ class ItemDetail(BulkUpdateModelMixin, ListCreateAPIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         except Item.DoesNotExist:
             raise Http404
+
+
+class JsLog(View):
+    def post(self, request):
+        component = request.POST.get('component')
+        func = request.POST.get('func')
+        err = request.POST.get('err')
+
+        if component and func:
+            loc = "{}:{} - ".format(component, func)
+        else:
+            loc = ""
+
+        msg = loc + request.POST.get('str')
+
+        if (err == 'true'):
+            jslogger.error(msg)
+        else:
+            jslogger.debug(msg)
+
+        return Response()

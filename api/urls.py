@@ -10,6 +10,8 @@ urlpatterns = [
     url(r'^queue/$', views.Queue.as_view()),
     url(r'^item/$',
         views.ItemDetail.as_view()),
+    url(r'^jslog/$',
+        views.JsLog.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

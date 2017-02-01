@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie'
 
-export default function setup() {
+function setup() {
   function csrfSafeMethod(method) {
     // these HTTP methods do not require CSRF protection
     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
@@ -13,3 +13,11 @@ export default function setup() {
     }
   })
 }
+    
+function jslog(str, component='', func='', err=false) {
+  $.post("/jslog/",
+    {str, component, func, err}
+  );
+}
+
+export { setup, jslog }

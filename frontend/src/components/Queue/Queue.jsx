@@ -9,6 +9,8 @@ import {
   getPlayer
 } from '../Player/Player'
 
+import { jslog } from '../../common'
+
 import style from './queue.scss'
 
 export default class Queue extends React.Component {
@@ -142,6 +144,7 @@ export default class Queue extends React.Component {
     // make sure there's a 0th position item. if not, advance the list!
     let check = $.grep(this.state.items, (item) => { return item.position == 0 })
     if (check.length == 0) {
+      jslog("we got either a new or a bad queue state. advancing list.", "Queue", "componentDidMount");
       this.advanceList()
     }
     

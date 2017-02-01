@@ -214,5 +214,10 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': True,
         },
+        'js': {
+            'handlers': [default_handler],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
     }
 }

@@ -92,37 +92,43 @@ class YoutubePlayer extends Player {
 class SoundcloudPlayer extends Player {
   constructor(props) {
     super(props)
-    this.opts = {
-      visual: true,
-			auto_play: true,
-      liking: true
-    }
 
     this.widget = null
     this.lastSoundIndex = null
     this.currentSoundIndex = 0
-    this.getWidgetInterval = null
+    this.advance = false
 
+    this.playbackStart = this.playbackStart.bind(this)
     this.playbackEnd = this.playbackEnd.bind(this)
-    this.getWidget = this.getWidget.bind(this)
-    this.componentDidMount = this.componentDidMount.bind(this)
+    this.loadWidget = this.loadWidget.bind(this)
+    
+    this.opts = {
+      visual: true,
+			auto_play: true,
+      liking: true,
+      callback: this.loadWidget
+    }
+
+  }
+
+  playbackStart() {
+    this.widget.getCurrentSoundIndex( (response) => {
+      this.currentSoundIndex = response
+      if (response === this.lastSoundIndex) {
+        this.advance = true
+      } else {
+        this.advance = false
+      }
+    })
   }
 
   playbackEnd() {
-    if (this.lastSoundIndex === 0) {
+    if ((this.lastSoundIndex === 0) || (this.advance === true)) {
       this.props.playbackEnd()
-    } else {
-      this.widget.getCurrentSoundIndex( (response) => {
-        if (response === this.lastSoundIndex) {
-          this.props.playbackEnd()
-        } else {
-          this.currentSoundIndex = response
-        }
-      })
     }
   }
 
-  getWidget() {
+  loadWidget() {
     try {
       this.widget = window.SC.Widget('react-sc-widget')
       this.widget.getSounds( (response) => {
@@ -130,13 +136,6 @@ class SoundcloudPlayer extends Player {
       })
     } catch (e) { console.log('dang widget', e) }
 
-    if ((this.widget !== null) && (this.lastSoundIndex !== null)) {
-      clearInterval(this.getWidgetInterval)
-    }
-  }
-
-  componentDidMount() {
-    this.getWidgetInterval = setInterval(this.getWidget, 10000)
   }
 
   render() {
@@ -144,6 +143,7 @@ class SoundcloudPlayer extends Player {
       <div className="soundCloudContainer playerContainer">
         <SoundCloud
           url={this.props.item.uri}
+          onPlay={this.playbackStart}
           onEnd={this.playbackEnd}
           opts={this.opts}
         />

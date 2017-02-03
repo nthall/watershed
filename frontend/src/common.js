@@ -15,8 +15,9 @@ function setup() {
 }
     
 function jslog(str, component='', func='', err=false) {
+  const auth = localStorage.getItem("auth")
   $.post("/jslog/",
-    {str, component, func, err}
+    {str, component, func, err, auth}
   );
 }
 

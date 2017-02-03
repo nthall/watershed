@@ -1,8 +1,9 @@
 from __future__ import unicode_literals
 
+import json
 import logging
 
-from django.http import Http404, HttpResponseForbidden
+from django.http import HttpResponse, Http404, HttpResponseForbidden
 from django.contrib.auth import get_user_model
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
@@ -12,6 +13,7 @@ from rest_framework import permissions, status
 from rest_framework.generics import ListCreateAPIView
 from rest_framework.response import Response
 from rest_framework_bulk.mixins import BulkUpdateModelMixin
+from rest_framework.authtoken.models import Token
 
 from models import Item
 from permissions import IsOwner
@@ -94,17 +96,25 @@ class JsLog(View):
         component = request.POST.get('component')
         func = request.POST.get('func')
         err = request.POST.get('err')
+        auth = request.POST.get('auth')
+
+        if auth:
+            auth = json.loads(auth)
+            token = Token.objects.get(key=auth['token'])
+            u_str = token.user.email + ": "
+        else:
+            u_str = ""
 
         if component and func:
             loc = "{}:{} - ".format(component, func)
         else:
             loc = ""
 
-        msg = loc + request.POST.get('str')
+        msg = u_str + loc + request.POST.get('str')
 
         if (err == 'true'):
             jslogger.error(msg)
         else:
             jslogger.debug(msg)
 
-        return Response()
+        return HttpResponse()

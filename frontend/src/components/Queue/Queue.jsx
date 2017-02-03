@@ -172,7 +172,7 @@ export default class Queue extends React.Component {
   render() {
     let Items = this.state.items.filter( (item) => { return item.position > 0 } ).map( (item) => {
       return <Item data={item} key={item.id} deleteItem={this.deleteItem} moveItem={this.moveItem} />
-    }).sort(function(a,b) { return a.position - b.position })
+    }).sort(function(a,b) { return a.props.data.position - b.props.data.position })
 
     let currentItem = this.state.items.filter((item) => { return item.position == 0 })[0]
     let Player = false

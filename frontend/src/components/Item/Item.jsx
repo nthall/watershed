@@ -45,7 +45,7 @@ class ItemControls extends React.Component {
 
 }
 
-export default class Item extends React.Component {
+class Item extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -86,4 +86,22 @@ export default class Item extends React.Component {
       </li>
     )
   }
+
 }
+
+Item.propTypes = {
+  deleteItem: React.PropTypes.func.isRequired,
+  moveItem: React.PropTypes.func.isRequired,
+  data: React.PropTypes.shape({
+    id: React.PropTypes.number.isRequired,
+    position: React.PropTypes.number.isRequired,
+    platform: React.PropTypes.number.isRequired,
+    user: React.PropTypes.number.isRequired,
+    title: React.PropTypes.string,
+    artist: React.PropTypes.string,
+    embed: React.PropTypes.string,
+    uri: React.PropTypes.string
+  })
+}
+
+export default Item

@@ -2,8 +2,9 @@
 var path = require('path');
 var webpack = require('webpack');
 var BundleTracker = require('webpack-bundle-tracker');
+var HTMLWebpackPlugin = require('html-webpack-plugin');
 
-module.exports = {
+module.exports = [{
   //the base directory (absolute path) for resolving the entry option
   context: __dirname,
   //the entry point we created earlier. Note that './' means 
@@ -48,7 +49,6 @@ module.exports = {
         }
       },
       {
-        // lol one thing at a time, come back to this
         test: /\.scss$/,
         loaders: ['style', 'css', 'sass']
       }
@@ -61,4 +61,43 @@ module.exports = {
     //extensions that should be used to resolve modules
     extensions: ['', '.js', '.jsx'] 
   }   
-};
+},
+{
+  context: path.resolve(__dirname, "/browser"),
+  entry: {
+    index: 'index',
+    background: 'background',
+    bandcamp: 'bandcamp',
+    sources: 'sources',
+    content: 'content'
+  },
+  output: {
+    path: './dist',
+    filename: '[name].js'
+  },
+
+  plugins: [
+    new BundleTracker({filename: '../extension-stats.json'}),
+    new HTMLWebpackPlugin({
+      filename: '/html/index.html',
+      template: './src/html/index.html'
+    }),
+  ],
+
+  module: {
+    loaders: [
+      {
+        test: /\.js/,
+        exclude: /node_modules/,
+        loader: 'babel-loader',
+        query: {
+          presets: ['es2015']
+        }
+      },
+      {
+        test: /\.html/,
+        loader: 'html'
+      }
+    ]
+  }
+}];

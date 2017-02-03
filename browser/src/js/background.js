@@ -20,18 +20,15 @@ var save = function(data) {
     var method = "POST";
     var authorizationHeader = "Token " + response.token;
     // todo: probably use statusCode object to define actions for failure modes
-    $.ajax({
-      'url': url,
-      'data': JSON.stringify(data),
-      'method': method,
-      'headers': {
-        "Authorization": authorizationHeader
-      },
-      'contentType': 'application/json',
-      'dataType': 'json',
-      'success': onSave,
-      'error': onErr
+    let req = Request(url, {
+      body: JSON.stringify(data),
+      method: method,
+      headers: {
+        Authorization: authorizationHeader
+      }
     });
+
+    fetch(req)
   });
 }
 

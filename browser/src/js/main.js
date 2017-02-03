@@ -5,7 +5,7 @@ window.onload = function () {
     }
 
     if (!items.token) {
-      $("#authForm").css('display', 'block');
+      document.getElementById('authForm').style.display = 'block';
     } else {
       chrome.runtime.onMessage.addListener(function(data, sender, sendResponse) {
         if (chrome.runtime.lastError) {
@@ -17,15 +17,20 @@ window.onload = function () {
         }
       });
 
-      $('#content').html("<h2>Saving...</h2>");
+      document.getElementById('content').innerHTML = "<h2>Saving...</h2>";
       chrome.tabs.executeScript({file: "js/sources.js"});
       return true;
     }
   });
-  $('#authForm').on('submit', function(event) {
+  document.getElementById('authForm').addEventListener('submit', function(event) {
     event.preventDefault();
-    $.post("http://watershed.nthall.com/authtoken/",
-      $(this).serialize(),
+    const body = new FormData(event.target)
+    let req = new Request("http://watershed.nthall.com/authtoken/", {
+      method: "POST",
+      body 
+    });
+
+    fetch(req).then(
       function (response) {
         if (response.token) {
           chrome.storage.local.set(response);
@@ -33,8 +38,7 @@ window.onload = function () {
         } else {
           console.log("login fail");
         }
-      },
-      'json'
+      }
     );
   });
   chrome.runtime.onMessage.addListener(function(data) {
@@ -43,10 +47,10 @@ window.onload = function () {
     }
     if (data.action == 'saved') {
       //  '🎤', '🎧', '🎼', '🎹', '🎷', '🎺', '🎸', '🎻', '💃🏿', '👏', '⚡️', '💿', '🎙'
-      emojis = ['\uD83C\uDFA4', '\uD83C\uDFA7', '\uD83C\uDFBC', '\uD83C\uDFB9', '\uD83C\uDFB7', '\uD83C\uDFBA', '\uD83C\uDFB8', '\uD83C\uDFBB', '\uD83D\uDC83\uD83C\uDFFF', '\uD83D\uDC4F', '\u26A1\uFE0F', '\uD83D\uDCBF', '\uD83C\uDF99']; 
-      emoji1 = emojis[Math.floor(Math.random() * emojis.length)];
-      emoji2 = emojis[Math.floor(Math.random() * emojis.length)];
-      $('#content').text(emoji1 + "   Saved! " + emoji2)
+      const emojis = ['\uD83C\uDFA4', '\uD83C\uDFA7', '\uD83C\uDFBC', '\uD83C\uDFB9', '\uD83C\uDFB7', '\uD83C\uDFBA', '\uD83C\uDFB8', '\uD83C\uDFBB', '\uD83D\uDC83\uD83C\uDFFF', '\uD83D\uDC4F', '\u26A1\uFE0F', '\uD83D\uDCBF', '\uD83C\uDF99']; 
+      const emoji1 = emojis[Math.floor(Math.random() * emojis.length)];
+      const emoji2 = emojis[Math.floor(Math.random() * emojis.length)];
+      document.getElementById('content').innerHTML(`<p>${emoji1}   Saved! ${emoji2}</p>`)
     }
   });
 };

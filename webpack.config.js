@@ -2,7 +2,7 @@
 var path = require('path');
 var webpack = require('webpack');
 var BundleTracker = require('webpack-bundle-tracker');
-var HTMLWebpackPlugin = require('html-webpack-plugin');
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = [{
   //the base directory (absolute path) for resolving the entry option
@@ -63,25 +63,27 @@ module.exports = [{
   }   
 },
 {
-  context: path.resolve(__dirname, "/browser"),
+  context: path.resolve(__dirname, "browser"),
   entry: {
-    index: 'index',
-    background: 'background',
-    bandcamp: 'bandcamp',
-    sources: 'sources',
-    content: 'content'
+    main: './src/js/main',
+    background: './src/js/background',
+    bandcamp: './src/js/bandcamp',
+    sources: './src/js/sources',
+    content: './src/js/content'
   },
   output: {
-    path: './dist',
-    filename: '[name].js'
+    path: './browser/dist/',
+    filename: 'js/[name].js'
   },
 
   plugins: [
-    new BundleTracker({filename: '../extension-stats.json'}),
-    new HTMLWebpackPlugin({
-      filename: '/html/index.html',
-      template: './src/html/index.html'
-    }),
+    new BundleTracker({filename: './extension-stats.json'}),
+    new CopyWebpackPlugin([
+      {from: './src/manifest.json'},
+      {from: './src/media', to: 'media'},
+      {from: './src/css', to: 'css'},
+      {from: './src/html', to: 'html'}
+    ]),
   ],
 
   module: {
@@ -93,10 +95,6 @@ module.exports = [{
         query: {
           presets: ['es2015']
         }
-      },
-      {
-        test: /\.html/,
-        loader: 'html'
       }
     ]
   }

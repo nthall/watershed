@@ -6,3 +6,5 @@ app.log
 node_modules/
 frontend/bundles/
 webpack-stats.json
+extension-stats.json
+browser/dist/

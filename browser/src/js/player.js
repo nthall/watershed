@@ -1,20 +1,20 @@
-var port = chrome.runtime.connect({name: "player"});
+const port = chrome.runtime.connect({name: "player"})
 
 window.addEventListener("message", function(event) {
   if (event.source != window) {
     if (event.source == window.frames['bandcampPlayer']) {
-      window.postMessage(event.data, "*");
+      window.postMessage(event.data, "*")
     } else {
-      return false;
+      return false
     }
   }
 
-  port.postMessage(event.data);
+  port.postMessage(event.data)
 },
-false);
+false)
 
 port.onMessage.addListener(function(data) {
   if (data.advance) {
-    window.postMessage(data, "*");
+    window.postMessage(data, "*")
   }
-});
+})

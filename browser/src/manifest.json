@@ -2,10 +2,21 @@
     "manifest_version": 2,
     "name": "Watershed Music Player",
     "version": "0.1",
+    "icons": {
+        "16": "media/watershed-icon-16.png",
+        "19": "media/watershed-icon-transparent-19.png",
+        "38": "media/watershed-icon-transparent-38.png",
+        "48": "media/watershed-icon-48.png",
+        "128": "media/watershed-icon-128.png"
+    },
     "browser_action": {
         "default_popup": "html/index.html",
         "default_title": "Save to Watershed",
-        "default_icon": "media/favicon-music.png"
+        "default_icon": {
+            "16": "media/watershed-icon-16.png",
+            "48": "media/watershed-icon-48.png",
+            "128": "media/watershed-icon-128.png"
+        }
     },
     "background": {
         "persistent": true,
@@ -15,7 +26,8 @@
         "tabs",
         "storage",
         "http://*/",
-        "https://*/"
+        "https://*/",
+        "contextMenus"
     ],
     "content_scripts": [
         {

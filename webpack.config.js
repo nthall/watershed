@@ -69,7 +69,8 @@ module.exports = [{
     background: './src/js/background',
     bandcamp: './src/js/bandcamp',
     sources: './src/js/sources',
-    content: './src/js/content'
+    content: './src/js/content',
+    player: './src/js/player'
   },
   output: {
     path: './browser/dist/',

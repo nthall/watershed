@@ -1,1 +1,1 @@
-chrome.tabs.executeScript({file: "js/sources.js", allFrames: true});
+chrome.tabs.executeScript({file: "js/sources.js", allFrames: true})

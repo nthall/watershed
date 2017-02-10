@@ -39,7 +39,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 
     # 3rd party
-    'bootstrap3',
     'passwords',
     'rest_framework',
     'rest_framework.authtoken',

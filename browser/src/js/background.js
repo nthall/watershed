@@ -11,26 +11,33 @@ const onErr = function(jqXHR, textStatus, errorThrown) {
 }
 
 const save = function(data) {
-  chrome.runtime.sendMessage({'action': 'get_token'}, function(response) {
+  chrome.storage.local.get('token', (items) => {
     if (chrome.runtime.lastError) {
       console.log(chrome.runtime.lastError.message)
     }
 
-    const url = "https://watershed.nthall.com/queue/"
-    const method = "POST"
-    const authorizationHeader = "Token " + response.token
-    // todo: probably use statusCode object to define actions for failure modes
-    const headers = new Headers({
-      Authorization: authorizationHeader,
-      "Content-Type": "application/json"
-    })
-    let req = new Request(url, {
-      method,
-      body: JSON.stringify(data),
-      headers
-    })
+    if (items.token) {
+      const url = "https://watershed.nthall.com/queue/"
+      const method = "POST"
+      const authorizationHeader = "Token " + items.token
+      const headers = new Headers({
+        Authorization: authorizationHeader,
+        "Content-Type": "application/json"
+      })
+      let req = new Request(url, {
+        method,
+        body: JSON.stringify(data),
+        headers
+      })
 
-    fetch(req).then(onSave, onErr)
+      fetch(req).then(onSave, onErr)
+
+      // TODO: after moving to pocket-style feedback window,
+      // use it to display a feedback message in onSave/onErr
+    } else {
+      // TODO: after moving to pocket-style feedback window, 
+      // use it to force login here
+    }
   })
 }
 
@@ -65,4 +72,17 @@ chrome.runtime.onConnect.addListener(function(port) {
     }
   })
 
+})
+
+chrome.contextMenus.create({
+  contexts: ['all'],
+  type: 'normal',
+  id: 'context-save',
+  title: 'Save to Watershed',
+  onclick: (info) => { 
+    save({
+      uri: info.linkUrl,
+      referrer: info.pageUrl
+    })
+  }
 })

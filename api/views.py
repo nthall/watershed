@@ -17,6 +17,7 @@ from rest_framework.authtoken.models import Token
 
 from models import Item
 from permissions import IsOwner
+from scraper import Scraper
 from serializers import ItemSerializer
 
 User = get_user_model()
@@ -38,7 +39,10 @@ class Queue(ListCreateAPIView):
     @method_decorator(csrf_exempt)
     def post(self, request, format=None):
         data = {"user": request.user.pk}
-        data['platform'] = int(request.data.get('platform'))
+        logger.debug(request.data)
+        scrape = Scraper(request.data.get('uri'))
+        data.update(scrape.result())
+
         post = request.data.copy()
         post.update(data)
 

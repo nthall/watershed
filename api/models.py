@@ -56,21 +56,6 @@ class Item(models.Model):
         if self.position is None:
             self.position = Item.objects.queue(self.user).count()
 
-        if (self.platform == 3) and not self.embed:
-            # get soundcloud embed
-            data = {
-                'iframe': True,
-                'format': 'json',
-                'auto_play': False,
-                'url': self.uri
-            }
-            r = requests.get('https://soundcloud.com/oembed', data)
-            response = r.json()
-            self.embed = response['html']
-
-        if (self.platform == 1):
-            self.embed = self.embed.replace("tracklist=false", "tracklist=true")  # noqa
-
         super(Item, self).save(*args, **kwargs)
 
     def move(self, new_position):

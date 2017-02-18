@@ -5,8 +5,15 @@
   &:after {
     clear: both;
   }
-  &:hover {
-    cursor: pointer;
+
+  > * {
+    float: right;
+    &:hover {
+      cursor: pointer;
+    }
+    &:after {
+      clear: both;
+    }
   }
 
   #skipBtn {

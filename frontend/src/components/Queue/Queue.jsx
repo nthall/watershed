@@ -1,7 +1,8 @@
 import React from 'react'
 import FontAwesome from 'react-fontawesome'
+
+import AddForm from '../AddForm/AddForm'
 import Item from '../Item/Item'
-import User from '../../classes/User'
 import { 
   BandcampPlayer, 
   YoutubePlayer,
@@ -29,7 +30,7 @@ export default class Queue extends React.Component {
   }
 
   loadItemsFromServer() {
-    //todo: only add new items??? idfk
+    //todo: only add new items maybe
     const auth = this.props.user.header()
     const deferred = $.ajax({
       url: '/item/',
@@ -190,6 +191,8 @@ export default class Queue extends React.Component {
           <button className="btn control" id="skipBtn" onClick={this.advanceList}>
             <FontAwesome name="fast-forward" size="3x" ariaLabel="Play Next Item" fixedWidth />
           </button>
+          <br />
+          <AddForm user={this.props.user} />
         </div>
         {Player || ''}
         <div id="listContainer">

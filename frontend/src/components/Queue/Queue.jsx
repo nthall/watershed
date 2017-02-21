@@ -140,16 +140,16 @@ export default class Queue extends React.Component {
   }
 
   componentDidMount() {
-    this.loadItemsFromServer()
+    this.loadItemsFromServer().then( () => {
     
-    // make sure there's a 0th position item. if not, advance the list!
-    let check = $.grep(this.state.items, (item) => { return item.position == 0 })
-    if (check.length == 0) {
-      jslog("we got either a new or a bad queue state. advancing list.", "Queue", "componentDidMount");
-      this.advanceList()
-    }
-    
-    setInterval(this.loadItemsFromServer, this.refreshInterval)
+      let check = this.state.items.filter( (item) => { return item.position == 0 })
+      if (check.length == 0) {
+        jslog("we got either a new or a bad queue state. advancing list.", "Queue", "componentDidMount");
+        this.advanceList()
+      }
+      
+      setInterval(this.loadItemsFromServer, this.refreshInterval)
+    })
   }
 
   componentDidUpdate() {

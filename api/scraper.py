@@ -98,7 +98,8 @@ class Scraper():
 
     def youtube(self):
         self.artist = ''
-        self.title = self.soup.find('#eow-title').getText().strip()
+        self.title = self.soup.find('title').getText()\
+            .replace(" - YouTube", "")
 
         query = self.uri.split("?")[-1]
         self.embed = query.split("=")[-1]

@@ -42,9 +42,9 @@ export default class Queue extends React.Component {
       method: 'GET'
     })
 
-    deferred.done(function(data) {
-      if (this.updateServer) {
-      } else {
+    deferred.done(function(data, textStatus, jqXHR) {
+      if ((jqXHR.status === 200) && !(this.updateServer)) {
+        // i'm growing skeptical of the below line
         this.setState({items: data})
       }
     }.bind(this))
@@ -56,8 +56,6 @@ export default class Queue extends React.Component {
     // send updated positions, etc. to server and *then* loadItemsFromServer again
     // (rather than just use the response data to update state -- just to make sure
     //  we get the full list)
-    // this is maybe slightly premature but TOO DANG BAD
-
     // NB: only send what we need to send to avoid overwriting new info on server
 
     let payload = this.state.items.map((item) => {
@@ -142,6 +140,7 @@ export default class Queue extends React.Component {
   componentDidMount() {
     this.loadItemsFromServer().then( () => {
     
+      //todo: better check lol fuck
       let check = this.state.items.filter( (item) => { return item.position == 0 })
       if (check.length == 0) {
         jslog("we got either a new or a bad queue state. advancing list.", "Queue", "componentDidMount");

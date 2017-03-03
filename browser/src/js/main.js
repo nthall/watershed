@@ -43,7 +43,7 @@ window.onload = function () {
     if (items.token) {
       return run()
     } else {
-      authForm = document.getElementById('authForm')
+      let authForm = document.getElementById('authForm')
       authForm.style.display = 'block'
       authForm.addEventListener('submit', (event) => {
         event.preventDefault()

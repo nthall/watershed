@@ -1,7 +1,8 @@
 import React from 'react'
 import FontAwesome from 'react-fontawesome'
+
+import AddForm from '../AddForm/AddForm'
 import Item from '../Item/Item'
-import User from '../../classes/User'
 import { 
   BandcampPlayer, 
   YoutubePlayer,
@@ -29,7 +30,7 @@ export default class Queue extends React.Component {
   }
 
   loadItemsFromServer() {
-    //todo: only add new items??? idfk
+    //todo: only add new items maybe
     const auth = this.props.user.header()
     const deferred = $.ajax({
       url: '/item/',
@@ -41,9 +42,9 @@ export default class Queue extends React.Component {
       method: 'GET'
     })
 
-    deferred.done(function(data) {
-      if (this.updateServer) {
-      } else {
+    deferred.done(function(data, textStatus, jqXHR) {
+      if ((jqXHR.status === 200) && !(this.updateServer)) {
+        // i'm growing skeptical of the below line
         this.setState({items: data})
       }
     }.bind(this))
@@ -55,8 +56,6 @@ export default class Queue extends React.Component {
     // send updated positions, etc. to server and *then* loadItemsFromServer again
     // (rather than just use the response data to update state -- just to make sure
     //  we get the full list)
-    // this is maybe slightly premature but TOO DANG BAD
-
     // NB: only send what we need to send to avoid overwriting new info on server
 
     let payload = this.state.items.map((item) => {
@@ -139,16 +138,17 @@ export default class Queue extends React.Component {
   }
 
   componentDidMount() {
-    this.loadItemsFromServer()
+    this.loadItemsFromServer().then( () => {
     
-    // make sure there's a 0th position item. if not, advance the list!
-    let check = $.grep(this.state.items, (item) => { return item.position == 0 })
-    if (check.length == 0) {
-      jslog("we got either a new or a bad queue state. advancing list.", "Queue", "componentDidMount");
-      this.advanceList()
-    }
-    
-    setInterval(this.loadItemsFromServer, this.refreshInterval)
+      //todo: better check lol fuck
+      let check = this.state.items.filter( (item) => { return item.position == 0 })
+      if (check.length == 0) {
+        jslog("we got either a new or a bad queue state. advancing list.", "Queue", "componentDidMount");
+        this.advanceList()
+      }
+      
+      setInterval(this.loadItemsFromServer, this.refreshInterval)
+    })
   }
 
   componentDidUpdate() {
@@ -190,6 +190,8 @@ export default class Queue extends React.Component {
           <button className="btn control" id="skipBtn" onClick={this.advanceList}>
             <FontAwesome name="fast-forward" size="3x" ariaLabel="Play Next Item" fixedWidth />
           </button>
+          <br />
+          <AddForm user={this.props.user} />
         </div>
         {Player || ''}
         <div id="listContainer">

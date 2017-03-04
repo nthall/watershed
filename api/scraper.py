@@ -21,6 +21,7 @@ class ParseError(Exception):
     '''
     something went wrong while parsing, dang
     '''
+    pass
 
 
 class Scraper():
@@ -35,8 +36,8 @@ class Scraper():
         - artist (optional)
     '''
     def __init__(self, uri):
-        self.uri = uri
         self.page = requests.get(uri)
+        self.uri = self.page.url  # this accounts for redirects
         if self.page.status_code == 200:
             self.soup = BeautifulSoup(self.page.text, 'html5lib')
         else:
@@ -56,14 +57,18 @@ class Scraper():
                 return i
 
         twitter = self.soup.find('meta', property="twitter:site")
-        if dict(twitter.attrs)['content'] is not "bandcamp":
-            raise UnsupportedPlatformError
+        if twitter.attrs['content'] == "bandcamp":
+            return 1
+        else:
+            logger.error('no platform found for uri: {}'.format(self.uri))
+            raise UnsupportedPlatformError("No supported platform found :(")
 
     def bandcamp(self):
         artist = self.soup.select("span[itemprop='byArtist'] > a")[0]
         self.artist = artist.getText().strip()
 
-        title = self.soup.select("h2.trackTitle[itemprop='name']")[0]
+        title = self.soup.find("h2",
+                               {'class': 'trackTitle', 'itemprop': 'name'})
         self.title = title.getText().strip()
 
         meta = self.soup.find("meta", property='og:video:secure_url')
@@ -77,7 +82,8 @@ class Scraper():
         parts = [i.strip() for i in self.soup.title.getText().split("|")]
         self.artist = parts[1]
         remove = " by {}".format(self.artist)
-        self.title = parts[0].replace(remove, '')
+        self.title = parts[0].replace(remove, '')\
+            .replace('Free Listening on SoundCloud - ', '')
 
         data = {
             'iframe': True,
@@ -92,9 +98,10 @@ class Scraper():
 
     def youtube(self):
         self.artist = ''
-        self.title = self.soup.find(attrs={'name': 'description'})['content']
+        self.title = self.soup.find('title').getText()\
+            .replace(" - YouTube", "")
 
-        query = self.url.split("?")[-1]
+        query = self.uri.split("?")[-1]
         self.embed = query.split("=")[-1]
         return
 

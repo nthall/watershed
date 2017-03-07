@@ -1,4 +1,10 @@
 export default class UI {
+  static message(payload) {
+    chrome.tabs.query({active: true, lastFocusedWindow: true}, (tabs) => {
+      chrome.tabs.sendMessage(tabs[0]['id'], payload)
+    })
+  }
+
   setup() {
     let container = document.getElementById("ws-container")
     if (!container) {
@@ -11,14 +17,40 @@ export default class UI {
 
       let message = document.createElement("div")
       message.id = "ws-message"
-      container.append(message)
-
+      container.append(message) 
       let content = document.createElement("div")
       content.id = "ws-content"
       container.append(content)
-      document.appendChild(container)
+      document.body.appendChild(container)
     }
     return this
+  }
+
+  remove() {
+    let container = document.getElementById("ws-container")
+    container.parentNode.removeChild(container)
+    if (this.fading) {
+      window.clearInterval(this.fading)
+    }
+  }
+
+  fadeOut() {
+    const container = document.getElementById("ws-container")
+    container.style.opacity = 1
+
+    const duration = 3500
+    const interval = 10
+    const step = interval / duration
+
+    const fader = () => {
+      if (container.style.opacity > 0) {
+        container.style.opacity -= step
+      } else {
+        this.remove()
+      }
+    }
+
+    this.fading = window.setInterval(fader, interval)
   }
 
   error(msg) {
@@ -31,7 +63,7 @@ export default class UI {
     let authForm = document.createElement('form')
     authForm.method = "POST"
     authForm.id = "ws-authForm"
-    authFrom.innerHTML = `
+    authForm.innerHTML = `
       <input type="email" name="username" placeholder="email" />
       <input type="password" name="password" placeholder="password" />
       <button type="submit">Login</button>
@@ -61,10 +93,15 @@ export default class UI {
         }
       )
     })
+
+    document.getElementById("ws-content").appendChild(authForm)
+
+    return this
   }
 
   saveProgress() {
     document.getElementById('ws-content').innerHTML = "<p>Saving...</p>"
+    return this
   }
 
   saveSuccess() {
@@ -87,6 +124,7 @@ export default class UI {
     const emoji2 = emojis[Math.floor(Math.random() * emojis.length)]
     const str = `<p>${emoji1}   Saved! ${emoji2}</p>`
     document.getElementById('ws-content').innerHTML = str
+    return this
   }
 
 }

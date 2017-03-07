@@ -1,18 +1,18 @@
+import UI from './UI'
+
 const onSave = function(data, textStatus, jqXHR) {
-  console.log("in onSave now")
-  chrome.runtime.sendMessage({'action': 'saved'})
+  UI.message({'action': 'saved'})
 }
 
 const onErr = function(jqXHR, textStatus, errorThrown) {
   console.log(errorThrown, textStatus, jqXHR)
   if (jqXHR.status === 401) {
     // some kind of error message would be good
-    chrome.runtime.sendMessage({'action': 'force_login', 'msg': jqXHR.responseText})
+    UI.message({'action': 'force_login', 'msg': jqXHR.responseText})
   }
 }
 
 const save = function() {
-  console.log('sanity!')
   chrome.tabs.query({active: true, lastFocusedWindow: true}, (tabs) => {
     send({
       uri: tabs[0].url,
@@ -27,8 +27,6 @@ const send = function(data) {
     if (chrome.runtime.lastError) {
       console.log(chrome.runtime.lastError.message)
     }
-
-    console.log("send sanity!")
 
     if (items.token) {
       const url = "https://watershed.nthall.com/queue/"
@@ -49,7 +47,7 @@ const send = function(data) {
       // TODO: after moving to pocket-style feedback window,
       // use it to display a feedback message in onSave/onErr
     } else {
-      chrome.runtime.sendMessage({'action': 'force_login'})
+      UI.message({'action': 'force_login'})
     }
   })
 }
@@ -59,7 +57,6 @@ chrome.browserAction.onClicked.addListener( (tab) => {
   if (chrome.runtime.lastError) {
     console.log(chrome.runtime.lastError)
   }
-  console.log('browserAction!?')
   return save()
 })
 
@@ -69,6 +66,7 @@ chrome.runtime.onMessage.addListener(function(data) {
   }
   if (data.action) {
     if (data.action == 'save') {
+      UI.message({'action': 'saving'})
       return save()
     }
   }
@@ -101,8 +99,8 @@ chrome.contextMenus.create({
   title: 'Save to Watershed'
 })
 
-chrome.contextMenus.onClicked.addListener( (info) => { 
-  chrome.runtime.sendMessage({'action': 'saving'})
+chrome.contextMenus.onClicked.addListener( (info, tab) => { 
+  UI.message({'action': 'saving'})
   send({
     uri: info.linkUrl,
     referrer: info.pageUrl || ''

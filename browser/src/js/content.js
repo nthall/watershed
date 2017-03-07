@@ -1,18 +1,22 @@
 import UI from './UI'
 
+const ui = new UI()
+
 chrome.runtime.onMessage.addListener( (data) => {
   if (data.action) {
+    ui.setup()
     switch (data.action) {
       case "force_login":
-        let msg = data.msg || false
-        UI.setup().error(msg).showLogin()
+        ui.showLogin()
+        if (data.msg) {
+          ui.error(data.msg)
+        }
         break
-      case 'save':
       case 'saving':
-        UI.setup().saveProgress()
+        ui.saveProgress()
         break
       case 'saved':
-        UI.setup().saveSuccess()
+        ui.saveSuccess().fadeOut()
         break
     }
   }

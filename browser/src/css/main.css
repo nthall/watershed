@@ -20,11 +20,13 @@
 
 
 #ws-container {
-  position: absolute;
+  position: fixed;
+  z-index: 1000;
   top: 28px;
   right: 28px;
 
-  font-size: 14px;
+  text-align: center;
+  font-size: 18px;
   font-family: "Arial", sans-serif;
   width: 15em;
   height: 10em;
@@ -36,12 +38,19 @@
   border: 4px solid #93a1a1;
 }
 
+#ws-container h2 {
+  border-bottom: 1px solid gray;
+  color: #268bd2;
+  margin-bottom: 1em;
+}
+
 #ws-container input {
   border: 0px dashed gray;
   border-bottom: 1px dashed gray;
   margin: .5em;
   padding: .5em;
   max-width: 100%;
+  background-color: #fdf6e3;
 }
 
 #ws-container input:focus {

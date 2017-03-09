@@ -17,13 +17,17 @@ import style from './queue.scss'
 export default class Queue extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {items: []}
+    this.state = {
+      items: [],
+      history: false
+    }
     this.updateServer = false  // set true to send update to server
     this.refreshInterval = 5000
     
     this.loadItemsFromServer = this.loadItemsFromServer.bind(this)
     this.advanceList = this.advanceList.bind(this)
     this.moveItem = this.moveItem.bind(this)
+    this.toggleDisplay = this.toggleDisplay.bind(this)
 
     this.refreshData = this.refreshData.bind(this)
     this.deleteItem = this.deleteItem.bind(this)
@@ -44,8 +48,14 @@ export default class Queue extends React.Component {
 
     deferred.done(function(data, textStatus, jqXHR) {
       if ((jqXHR.status === 200) && !(this.updateServer)) {
-        // i'm growing skeptical of the below line
-        this.setState({items: data})
+        // this is an attempt to further safeguard against the 502 flail, idk
+        this.setState( (prevState, props) => {
+          if (data.length == 0) {
+            return prevState
+          } else {
+            return {items: data}
+          }
+        })
       }
     }.bind(this))
 
@@ -118,6 +128,7 @@ export default class Queue extends React.Component {
     this.updateServer = true
     const oldpos = target.position
     this.setState( (prevState, props) => { 
+      //todo: update to account for History vs Playlist
       return {
         items: prevState.items.map((item) => {
           if (item === target) {
@@ -169,12 +180,29 @@ export default class Queue extends React.Component {
     })
   }
 
-  render() {
-    let Items = this.state.items.filter( (item) => { return item.position > 0 } ).map( (item) => {
-      return <Item data={item} key={item.id} deleteItem={this.deleteItem} moveItem={this.moveItem} />
-    }).sort(function(a,b) { return a.props.data.position - b.props.data.position })
+  toggleDisplay() {
+    this.setState( (prevState, props) => {
+      return {history: !prevState.history}
+    })
+  }
 
-    let currentItem = this.state.items.filter((item) => { return item.position == 0 })[0]
+  render() {
+    const Playlist = []
+    const History = []
+
+    const all = this.state.items.map( (item) => {
+        return <Item data={item} key={item.id} deleteItem={this.deleteItem} moveItem={this.moveItem} />
+      }).sort(function(a,b) { return a.props.data.position - b.props.data.position })
+
+    all.forEach( (item) => {
+      if (item.props.data.position < 0) {
+        History.push(item)
+      } else if (item.props.data.position > 0) {
+        Playlist.push(item)
+      }
+    })
+
+    const currentItem = this.state.items.filter((item) => { return item.position == 0 })[0]
     let Player = false
     if (typeof currentItem !== 'undefined') {
       Player = getPlayer({
@@ -194,10 +222,35 @@ export default class Queue extends React.Component {
           <AddForm user={this.props.user} />
         </div>
         {Player || ''}
+        <div className="toggle">
+          <span>
+            <a
+              id="playlist"
+              className={this.state.history ? "dormant" : "active"}
+              onClick={this.toggleDisplay}
+            >
+              Playlist
+            </a>
+            &nbsp;|&nbsp;
+            <a
+              id="history"
+              className={this.state.history ? "active" : "dormant"}
+              onClick={this.toggleDisplay}
+            >
+              History
+            </a>
+          </span>
+        </div>
         <div id="listContainer">
-          <ul>
-            {Items}
-          </ul>
+          {this.state.history ? 
+            <ul id="historyContainer">
+              {History}
+            </ul>
+            :
+            <ul id="playlistContainer">
+              {Playlist}
+            </ul>
+          }
         </div>
       </div>
     )

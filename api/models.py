@@ -7,8 +7,6 @@ from django.dispatch import receiver
 
 from rest_framework.authtoken.models import Token
 
-import requests
-
 PLATFORMS = (
     (0, 'Unknown'),
     (1, 'Bandcamp'),

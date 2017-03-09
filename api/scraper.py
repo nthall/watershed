@@ -27,7 +27,7 @@ class ParseError(Exception):
 class Scraper():
     '''
     pass a URI and receive either:
-    - False (if no supported platform found) or
+    - an Error (no platform found or something)
     - a dict containing the scraped data
       - dict keys:
         - platform

@@ -2,9 +2,9 @@ db.sqlite3
 .venv
 static/
 pid
-app.log
+app.log*
 node_modules/
-frontend/bundles/
+frontend/bundles/*
 webpack-stats.json
 extension-stats.json
 browser/dist/

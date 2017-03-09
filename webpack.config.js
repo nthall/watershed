@@ -3,6 +3,7 @@ var path = require('path');
 var webpack = require('webpack');
 var BundleTracker = require('webpack-bundle-tracker');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
+var CleanWebpackPlugin = require('clean-webpack-plugin');
 
 module.exports = [{
   //the base directory (absolute path) for resolving the entry option
@@ -29,6 +30,9 @@ module.exports = [{
       $: 'jquery',
       jQuery: 'jquery',
       'window.jQuery': 'jquery' 
+    }),
+    new CleanWebpackPlugin(['bundles'], {
+      root: path.resolve('./frontend/')
     })
   ],
   

@@ -69,7 +69,6 @@ module.exports = [{
 {
   context: path.resolve(__dirname, "browser"),
   entry: {
-    main: './src/js/main',
     background: './src/js/background',
     bandcamp: './src/js/bandcamp',
     content: './src/js/content',

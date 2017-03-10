@@ -1,16 +1,28 @@
+import UI from './UI'
+
 const onSave = function(data, textStatus, jqXHR) {
-  chrome.runtime.sendMessage({'action': 'saved'})
+  UI.message({'action': 'saved'})
 }
 
 const onErr = function(jqXHR, textStatus, errorThrown) {
   console.log(errorThrown, textStatus, jqXHR)
   if (jqXHR.status === 401) {
     // some kind of error message would be good
-    chrome.storage.local.clear()
+    UI.message({'action': 'force_login', 'msg': jqXHR.responseText})
   }
 }
 
-const save = function(data) {
+const save = function() {
+  chrome.tabs.query({active: true, lastFocusedWindow: true}, (tabs) => {
+    send({
+      uri: tabs[0].url,
+      referrer: tabs[0].url
+    })
+  })
+  return true
+}
+
+const send = function(data) {
   chrome.storage.local.get('token', (items) => {
     if (chrome.runtime.lastError) {
       console.log(chrome.runtime.lastError.message)
@@ -35,11 +47,18 @@ const save = function(data) {
       // TODO: after moving to pocket-style feedback window,
       // use it to display a feedback message in onSave/onErr
     } else {
-      // TODO: after moving to pocket-style feedback window, 
-      // use it to force login here
+      UI.message({'action': 'force_login'})
     }
   })
 }
+
+
+chrome.browserAction.onClicked.addListener( (tab) => {
+  if (chrome.runtime.lastError) {
+    console.log(chrome.runtime.lastError)
+  }
+  return save()
+})
 
 chrome.runtime.onMessage.addListener(function(data) {
   if (chrome.runtime.lastError) { 
@@ -47,9 +66,8 @@ chrome.runtime.onMessage.addListener(function(data) {
   }
   if (data.action) {
     if (data.action == 'save') {
-      delete data.action
-      save(data)
-      return true; // async
+      UI.message({'action': 'saving'})
+      return save()
     }
   }
 })
@@ -78,11 +96,13 @@ chrome.contextMenus.create({
   contexts: ['all'],
   type: 'normal',
   id: 'context-save',
-  title: 'Save to Watershed',
-  onclick: (info) => { 
-    save({
-      uri: info.linkUrl,
-      referrer: info.pageUrl
-    })
-  }
+  title: 'Save to Watershed'
+})
+
+chrome.contextMenus.onClicked.addListener( (info, tab) => { 
+  UI.message({'action': 'saving'})
+  send({
+    uri: info.linkUrl,
+    referrer: info.pageUrl || ''
+  })
 })

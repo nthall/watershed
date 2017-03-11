@@ -2,22 +2,10 @@
  * v2.0 | 20110126
  * License: none (public domain)
  *
- * (but modified a bit tho)
+ * (but modified a bunch tho)
  */
 
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend, input,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed, 
-figure, figcaption, footer, header, hgroup, 
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
+#ws-container * {
   margin: 0;
   padding: 0;
   border: 0;
@@ -25,57 +13,51 @@ time, mark, audio, video {
   font: inherit;
   vertical-align: baseline;
 }
-/* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure, 
-footer, header, hgroup, menu, nav, section {
-  display: block;
-}
-body {
-  line-height: 1;
-}
-ol, ul {
+#ws-container ol, #ws-container ul {
   list-style: none;
 }
-blockquote, q {
-  quotes: none;
-}
-blockquote:before, blockquote:after,
-q:before, q:after {
-  content: '';
-  content: none;
-}
-table {
-  border-collapse: collapse;
-  border-spacing: 0;
-}
-
 /* end reset.css */
 
 
-html, body {
-  font-size: 14px;
+#ws-container {
+  position: fixed;
+  z-index: 1000;
+  top: 28px;
+  right: 28px;
+
+  text-align: center;
+  font-size: 18px;
   font-family: "Arial", sans-serif;
   width: 15em;
   height: 10em;
-}
-
-body {
   padding: 1em;
+  background-color: #fdf6e3;
+  color: #657b83;
+
+  border-radius: 12px;
+  border: 4px solid #93a1a1;
 }
 
-input {
+#ws-container h2 {
+  border-bottom: 1px solid gray;
+  color: #268bd2;
+  margin-bottom: 1em;
+}
+
+#ws-container input {
   border: 0px dashed gray;
   border-bottom: 1px dashed gray;
   margin: .5em;
   padding: .5em;
   max-width: 100%;
+  background-color: #fdf6e3;
 }
 
-input:focus {
+#ws-container input:focus {
   outline: none;
 }
 
-button {
+#ws-container button {
   background-color: #ddd;
   border: 0px solid gray;
   padding: .5em;

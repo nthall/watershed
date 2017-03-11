@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Watershed Music Player",
-    "version": "0.2.1",
+    "version": "0.3.0",
     "icons": {
         "16": "media/watershed-icon-16.png",
         "19": "media/watershed-icon-transparent-19.png",
@@ -10,7 +10,6 @@
         "128": "media/watershed-icon-128.png"
     },
     "browser_action": {
-        "default_popup": "html/index.html",
         "default_title": "Save to Watershed",
         "default_icon": {
             "16": "media/watershed-icon-16.png",
@@ -19,8 +18,8 @@
         }
     },
     "background": {
-        "persistent": true,
-        "page": "html/background.html"
+        "persistent": false,
+        "scripts": ["js/background.js"]
     },
     "permissions": [
         "tabs",
@@ -31,8 +30,14 @@
     ],
     "content_scripts": [
         {
-            "matches": ["*://watershed.nthall.com/"],
+            "matches": ["https://watershed.nthall.com/"],
             "js": ["js/player.js"]
+        },
+        {
+            "matches": ["<all_urls>"],
+            "exclude_matches": ["https://watershed.nthall.com/"],
+            "js": ["js/content.js"],
+            "css": ["css/main.css"]
         }
     ]
 }

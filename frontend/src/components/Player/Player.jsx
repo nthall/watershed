@@ -6,31 +6,6 @@ import style from './player.scss'
 class Player extends React.Component {
   constructor(props) {
     super(props)
-
-    this.updateServer = this.updateServer.bind(this)
-  }
-
-  updateServer(data) {
-    const url = `/item/{$this.props.data.id}/`
-    $.ajax({
-      url,
-      data,
-      context: this,
-      method: "PATCH",
-      header: this.props.user.header(),
-      contentType: 'application/json',
-      processData: false,
-      error: function(response) {
-        setTimeout(this.updateServer(data), 2000)
-      }.bind(this),
-      success: function(response) {
-        // TBD, maybe noop
-        return
-      }
-    }).bind(this)
-  }
-
-  render() {
   }
 }
 

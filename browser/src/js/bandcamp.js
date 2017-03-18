@@ -1,6 +1,10 @@
 const port = chrome.runtime.connect({name: "player"})
+
 const advance = function() {
-  window.parent.postMessage({advance: true, sender: 'bandcamp'}, "*")
+  window.parent.postMessage({
+    advance: true,
+    sender: 'bandcamp'
+  }, "*")
 }
 
 const play = document.getElementById("big_play_button")
@@ -33,7 +37,10 @@ if (play) {  // only run logic in bandcamp iframe
       const observer = new MutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {
           if (mutation.target.classList.contains("currenttrack")) {
-            document.getElementsByTagName('audio')[0].addEventListener('ended', advance)
+            document.getElementsByTagName('audio')[0].addEventListener('ended', () => {
+              advance()
+              observer.disconnect()
+            })
           }
         })
       })
@@ -42,7 +49,9 @@ if (play) {  // only run logic in bandcamp iframe
     }
   } else {
     // todo: active_tracks approach may mean that if we end up in this else block we just need to advance the list??
-    play.click(); // autoplay
-    document.getElementsByTagName('audio')[0].addEventListener('ended', advance)
+    play.click() // autoplay
+    document.getElementsByTagName('audio')[0].addEventListener('ended', () => {
+      advance()
+    })
   }
 }

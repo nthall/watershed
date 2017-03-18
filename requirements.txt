@@ -16,3 +16,4 @@ South==1.0.2
 typing==3.5.2.2
 beautifulsoup4
 html5lib
+psycopg2

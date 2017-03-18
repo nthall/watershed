@@ -22,6 +22,7 @@ export default class Queue extends React.Component {
       history: false
     }
     this.updateServer = false  // set true to send update to server
+    this.refreshing = false
     this.refreshInterval = 5000
     
     this.loadItemsFromServer = this.loadItemsFromServer.bind(this)
@@ -68,37 +69,42 @@ export default class Queue extends React.Component {
     //  we get the full list)
     // NB: only send what we need to send to avoid overwriting new info on server
 
-    let payload = this.state.items.map((item) => {
-      const whitelist = ['id', 'position']
-      let output = {}
+    if (!this.refreshing) {
+      this.refreshing = true
 
-      for (let i=0, l=whitelist.length; i < l; i++) {
-        output[whitelist[i]] = item[whitelist[i]]
-      }
+      let payload = this.state.items.map((item) => {
+        const whitelist = ['id', 'position']
+        let output = {}
 
-      return output
-    })
+        for (let i=0, l=whitelist.length; i < l; i++) {
+          output[whitelist[i]] = item[whitelist[i]]
+        }
 
-    const auth = this.props.user.header()
-    const deferred = $.ajax({
-      headers: {
-        Authorization: auth
-      },
-      url: '/item/',
-      method: 'PATCH',
-      cache: false,
-      dataType: 'json',
-      contentType: 'application/json',
-      data: JSON.stringify(payload),
-      processData: false,
-    })
+        return output
+      })
 
-    deferred.done(function() { this.updateServer = false; this.loadItemsFromServer() }.bind(this))
+      const auth = this.props.user.header()
+      const deferred = $.ajax({
+        headers: {
+          Authorization: auth
+        },
+        url: '/item/',
+        method: 'PATCH',
+        cache: false,
+        dataType: 'json',
+        contentType: 'application/json',
+        data: JSON.stringify(payload),
+        processData: false,
+      })
 
-    return deferred
+      deferred.done(function() { this.updateServer = false; this.refreshing = false; this.loadItemsFromServer() }.bind(this))
+
+      return deferred
+    }
   }
 
   deleteItem(item) {
+    //todo!! deleteItem breaks queue positioning currently.
     this.updateServer = true
     const auth = this.props.user.header()
     const deferred = $.ajax({
@@ -155,6 +161,7 @@ export default class Queue extends React.Component {
       let check = this.state.items.filter( (item) => { return item.position == 0 })
       if (check.length == 0) {
         jslog("we got either a new or a bad queue state. advancing list.", "Queue", "componentDidMount");
+        console.log("nothing in position0, dang")
         this.advanceList()
       }
       
@@ -162,8 +169,8 @@ export default class Queue extends React.Component {
     })
   }
 
-  componentDidUpdate() {
-    if (this.updateServer) {
+  componentDidUpdate(prevProps, prevState) {
+    if (this.updateServer && !this.refreshing) {
       this.refreshData()
     }
   }

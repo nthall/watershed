@@ -12,20 +12,30 @@ class Player extends React.Component {
 class BandcampPlayer extends Player {
   constructor(props) {
     super(props)
+    this.componentWillUnmount = this.componentWillUnmount.bind(this)
+    this.messageListener = this.messageListener.bind(this)
+    this.load = this.load.bind(this)
 
     // extension interactions
     window.playbackEnd = this.props.playbackEnd
-    window.addEventListener('message', function(event) {
-      if (event.data.advance) {
-        window.playbackEnd()
-      }
-    })
+    window.addEventListener('message', this.messageListener, false)
   }
 
   load() {
     window.postMessage({type: "BANDCAMP_LOAD"}, "*")
   }
 
+  componentWillUnmount() {
+    window.removeEventListener('message', this.messageListener, false)
+  }
+
+  messageListener(event) {
+    event.stopImmediatePropagation()
+    if (event.data.advance) {
+      window.playbackEnd()
+      window.removeEventListener('message', this.messageListener, false)
+    }
+  }
 
   render() {
     return (

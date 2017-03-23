@@ -43,9 +43,6 @@ const send = function(data) {
       })
 
       fetch(req).then(onSave, onErr)
-
-      // TODO: after moving to pocket-style feedback window,
-      // use it to display a feedback message in onSave/onErr
     } else {
       UI.message({'action': 'force_login'})
     }

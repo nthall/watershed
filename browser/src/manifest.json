@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Watershed Music Player",
-    "version": "0.3.1",
+    "version": "0.3.2",
     "icons": {
         "16": "media/watershed-icon-16.png",
         "19": "media/watershed-icon-transparent-19.png",

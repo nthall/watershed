@@ -38,7 +38,7 @@ export default class UI {
     const container = document.getElementById("ws-container")
     container.style.opacity = 1
 
-    const duration = 3500
+    const duration = 5000
     const interval = 10
     const step = interval / duration
 

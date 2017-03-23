@@ -16,8 +16,7 @@ class BandcampPlayer extends Player {
     this.messageListener = this.messageListener.bind(this)
     this.load = this.load.bind(this)
 
-    // extension interactions
-    window.playbackEnd = this.props.playbackEnd
+    // extension interaction
     window.addEventListener('message', this.messageListener, false)
   }
 
@@ -31,9 +30,8 @@ class BandcampPlayer extends Player {
 
   messageListener(event) {
     event.stopImmediatePropagation()
-    if (event.data.advance) {
-      window.playbackEnd()
-      window.removeEventListener('message', this.messageListener, false)
+    if (event.data.advance && !event.data.repeat) {
+      this.props.playbackEnd()
     }
   }
 

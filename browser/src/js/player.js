@@ -14,7 +14,8 @@ window.addEventListener("message", function(event) {
 false)
 
 port.onMessage.addListener(function(data) {
-  if (data.advance) {
+  // this is really just for the advance message
+  if (data.advance && !data.repeat) {
     window.postMessage(data, "*")
   }
 })

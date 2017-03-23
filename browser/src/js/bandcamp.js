@@ -1,13 +1,13 @@
-const port = chrome.runtime.connect({name: "player"})
+const play = document.getElementById("big_play_button")
 
 const advance = function() {
   window.parent.postMessage({
     advance: true,
-    sender: 'bandcamp'
+    sender: 'bandcamp',
+    repeat: false
   }, "*")
 }
 
-const play = document.getElementById("big_play_button")
 
 if (play) {  // only run logic in bandcamp iframe
   const tracklist = document.getElementById("tracklist_ul").children
@@ -32,7 +32,9 @@ if (play) {  // only run logic in bandcamp iframe
 
     const last_track = active_tracks[active_tracks.length - 1]
     if (last_track.children[0].textContent == loaded_track.textContent) {
-      document.getElementsByTagName('audio')[0].addEventListener('ended', advance)
+      document.getElementsByTagName('audio')[0].addEventListener('ended', () => {
+        advance()
+      })
     } else {
       const observer = new MutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {

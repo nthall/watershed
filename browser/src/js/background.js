@@ -83,7 +83,12 @@ chrome.runtime.onConnect.addListener(function(port) {
         file: "js/bandcamp.js",
         allFrames: true
       })
-    } 
+    } else if (data.advance) {
+      if (typeof(data.repeat) === 'undefined') {
+        data.repeat = true
+        port.postMessage(data)
+      }
+    }
   })
 
 })

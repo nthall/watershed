@@ -79,11 +79,12 @@ class Scraper():
 
     def soundcloud(self):
         logger.debug(self.soup.title)
+        # example raw titles:
+        # Magic Tape 69 by The Magician | Free Listening on SoundCloud
         parts = [i.strip() for i in self.soup.title.getText().split("|")]
-        self.artist = parts[1]
-        remove = " by {}".format(self.artist)
-        self.title = parts[0].replace(remove, '')\
-            .replace('Free Listening on SoundCloud - ', '')
+        raw = parts[0].split(" by ")
+        self.artist = raw[1].strip(" -")
+        self.title = raw[0].replace(self.artist, '').strip(" -")
 
         data = {
             'iframe': True,

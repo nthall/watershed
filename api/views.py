@@ -39,14 +39,13 @@ class Queue(ListCreateAPIView):
     @method_decorator(csrf_exempt)
     def post(self, request, format=None):
         data = {"user": request.user.pk}
-        logger.debug(request.data)
         scrape = Scraper(request.data.get('uri'))
         data.update(scrape.result())
 
         post = request.data.copy()
         post.update(data)
 
-        # have to explicitly pass context or BulkMixin screws you
+        # have to explicitly pass context or BulkMixin doesn't work right
         context = self.get_serializer_context()
         serializer = ItemSerializer(data=post, context=context)
         if serializer.is_valid():
@@ -90,6 +89,7 @@ class ItemDetail(BulkUpdateModelMixin, ListCreateAPIView):
             item_id = request.data.get("id")
             item = Item.objects.get(pk=item_id, user=user)
             item.delete()
+            # todo: this leaves a hole in the queue
             return Response(status=status.HTTP_204_NO_CONTENT)
         except Item.DoesNotExist:
             raise Http404

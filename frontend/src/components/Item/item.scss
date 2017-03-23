@@ -1,9 +1,10 @@
 @import "../../colors";
 
 .queueItem{
-    height: 2em;
-    border-bottom: 1px solid $base1;
-	padding-left: 2em;
+  height: 2em;
+  line-height: 2em;
+  border-bottom: 1px solid $base1;
+	padding-left: 1em;
 	padding-top: .5em;
 	padding-bottom: .5em;
 
@@ -11,53 +12,51 @@
 		margin-left: 1em;
 	}
 
-    &:first-child {
-        border-top: 1px solid $base1;
-    }
+  &:first-child {
+    border-top: 1px solid $base1;
+  }
 	&:hover {
 		background-color: $base2;
 	}
 
-    .itemControls {
-        margin-right: 2em;
-        float: right;
-        &:after {
-            clear: both;
-        }
-        button {
-            display: inline-block;
-            margin-top: 0;
-            margin-bottom: 0;
-            &:hover {
-                background-color: $base03;
-            }
-        }
+  .itemControls {
+    margin-right: 1em;
+    float: right;
+    &:after {
+      clear: both;
     }
-
-    .delete:hover {
-        .icon {
-            color: $magenta;
-        }
+    button {
+      display: inline-block;
+      margin-top: 0;
+      margin-bottom: 0;
+      &:hover {
+        background-color: $base03;
+      }
     }
+  }
 
-    .playNow:hover {
-        .icon {
-            color: $cyan;
-        }
+  .delete:hover {
+    .icon {
+      color: $magenta;
     }
+  }
 
-    .playNext:hover {
-        .icon {
-            color: $yellow;
-        }
+  .playNow:hover {
+    .icon {
+      color: $cyan;
     }
+  }
 
-    .moveUp:hover {
-        .icon {
-            color: $blue;
-        }
+  .playNext:hover {
+    .icon {
+      color: $yellow;
     }
+  }
 
-
+  .moveUp:hover {
+    .icon {
+      color: $blue;
+    }
+  }
 
 }

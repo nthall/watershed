@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 import logging
+import urlparse
 
 import requests
 from bs4 import BeautifulSoup
@@ -102,8 +103,10 @@ class Scraper():
         self.title = self.soup.find('title').getText()\
             .replace(" - YouTube", "")
 
-        query = self.uri.split("?")[-1]
-        self.embed = query.split("=")[-1]
+        query = urlparse.urlparse(self.uri)
+        qs = urlparse.parse_qs(query[4])
+        self.embed = qs['v'][0]
+        logger.debug("youtube - v = {}".format(self.embed))
         return
 
     def result(self):

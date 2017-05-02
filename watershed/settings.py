@@ -44,7 +44,8 @@ INSTALLED_APPS = (
     # app
     'customauth.apps.CustomauthConfig',
     'api.apps.ApiConfig',
-    'player.apps.PlayerConfig'
+    'player.apps.PlayerConfig',
+    'stats.apps.StatsConfig'
 )
 
 AUTH_USER_MODEL = 'customauth.User'

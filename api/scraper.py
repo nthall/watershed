@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 import logging
+import urlparse
 
 import requests
 from bs4 import BeautifulSoup
@@ -79,11 +80,12 @@ class Scraper():
 
     def soundcloud(self):
         logger.debug(self.soup.title)
+        # example raw titles:
+        # Magic Tape 69 by The Magician | Free Listening on SoundCloud
         parts = [i.strip() for i in self.soup.title.getText().split("|")]
-        self.artist = parts[1]
-        remove = " by {}".format(self.artist)
-        self.title = parts[0].replace(remove, '')\
-            .replace('Free Listening on SoundCloud - ', '')
+        raw = parts[0].split(" by ")
+        self.artist = raw[1].strip(" -")
+        self.title = raw[0].replace(self.artist, '').strip(" -")
 
         data = {
             'iframe': True,
@@ -101,8 +103,10 @@ class Scraper():
         self.title = self.soup.find('title').getText()\
             .replace(" - YouTube", "")
 
-        query = self.uri.split("?")[-1]
-        self.embed = query.split("=")[-1]
+        query = urlparse.urlparse(self.uri)
+        qs = urlparse.parse_qs(query[4])
+        self.embed = qs['v'][0]
+        logger.debug("youtube - v = {}".format(self.embed))
         return
 
     def result(self):

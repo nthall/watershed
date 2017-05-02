@@ -1,0 +1,18 @@
+{% extends 'admin/base_site.html' %}
+
+{% block title %}Watershed Stats{% endblock %}
+
+{% block content %}
+  <h1>Sup now?</h1>
+  <dl>
+    <dt>Total Users:</dt>
+    <dd>{{user_count}}</dd>
+
+    <dt>Total saves:</dt>
+    <dd>{{save_count}}</dd>
+
+    <dt>Total plays:</dt>
+    <dd>{{play_count}}</dd>
+
+  </dl>
+{% endblock %}

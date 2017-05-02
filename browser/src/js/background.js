@@ -1,3 +1,4 @@
+import getDomain from './getDomain'
 import UI from './UI'
 
 const onSave = function(data, textStatus, jqXHR) {
@@ -29,14 +30,14 @@ const send = function(data) {
     }
 
     if (items.token) {
-      const url = "https://watershed.nthall.com/queue/"
+      const uri = getDomain() + "queue/"
       const method = "POST"
       const authorizationHeader = "Token " + items.token
       const headers = new Headers({
         Authorization: authorizationHeader,
         "Content-Type": "application/json"
       })
-      let req = new Request(url, {
+      let req = new Request(uri, {
         method,
         body: JSON.stringify(data),
         headers

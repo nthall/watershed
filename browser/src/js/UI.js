@@ -1,3 +1,5 @@
+import getDomain from './getDomain'
+
 export default class UI {
   static message(payload) {
     chrome.tabs.query({active: true, lastFocusedWindow: true}, (tabs) => {
@@ -72,7 +74,7 @@ export default class UI {
     authForm.addEventListener('submit', (event) => {
       event.preventDefault()
       const body = new FormData(event.target)
-      let req = new Request("https://watershed.nthall.com/authtoken/", {
+      let req = new Request(getDomain() + "authtoken/", {
         method: "POST",
         body 
       })

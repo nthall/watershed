@@ -7,16 +7,18 @@ export default function jslog (msg) {
     }
 
     if (items.token) {
-      const uri = getDomain() + 'jslog/'
-      const method = "POST"
-      const authorizationHeader = "Token " + items.token
-      const headers = new Headers({
-        Authorization: authorizationHeader,
-        "Content-Type": "application/json"
-      })
+      getDomain().then( (domain) => {
+        const uri = domain + 'jslog/'
+        const method = "POST"
+        const authorizationHeader = "Token " + items.token
+        const headers = new Headers({
+          Authorization: authorizationHeader,
+          "Content-Type": "application/json"
+        })
 
-      let req = new Request(uri, {method, msg})
-      fetch(req)
+        let req = new Request(uri, {method, msg})
+        fetch(req)
+      })
     }
   })
 }

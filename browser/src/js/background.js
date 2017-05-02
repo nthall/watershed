@@ -30,20 +30,22 @@ const send = function(data) {
     }
 
     if (items.token) {
-      const uri = getDomain() + "queue/"
-      const method = "POST"
-      const authorizationHeader = "Token " + items.token
-      const headers = new Headers({
-        Authorization: authorizationHeader,
-        "Content-Type": "application/json"
-      })
-      let req = new Request(uri, {
-        method,
-        body: JSON.stringify(data),
-        headers
-      })
+      getDomain().then( (domain) => {
+        const uri = domain + "queue/"
+        const method = "POST"
+        const authorizationHeader = "Token " + items.token
+        const headers = new Headers({
+          Authorization: authorizationHeader,
+          "Content-Type": "application/json"
+        })
+        let req = new Request(uri, {
+          method,
+          body: JSON.stringify(data),
+          headers
+        })
 
-      fetch(req).then(onSave, onErr)
+        fetch(req).then(onSave, onErr)
+      })
     } else {
       UI.message({'action': 'force_login'})
     }

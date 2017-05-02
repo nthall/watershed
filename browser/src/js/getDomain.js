@@ -1,9 +1,11 @@
 export default function getDomain() {
-  chrome.management.getSelf( (extensionInfo) => {
-    if (extensionInfo.installType == "development") {
-      return "https://watershed-dev.nthall.com/"
-    } else {
-      return "https://watershed.nthall.com/"
-    }
+  return new Promise( (resolve, reject) => {
+    chrome.management.getSelf( (extensionInfo) => {
+      if (extensionInfo.installType == "development") {
+        resolve("https://watershed-dev.nthall.com/")
+      } else {
+        resolve("https://watershed.nthall.com/")
+      }
+    })
   })
 }

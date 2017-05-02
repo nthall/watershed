@@ -74,26 +74,28 @@ export default class UI {
     authForm.addEventListener('submit', (event) => {
       event.preventDefault()
       const body = new FormData(event.target)
-      let req = new Request(getDomain() + "authtoken/", {
-        method: "POST",
-        body 
-      })
+      getDomain().then( (domain) => {
+        let req = new Request(domain + "authtoken/", {
+          method: "POST",
+          body 
+        })
 
-      fetch(req)
-        .then( (response) => { return response.json() } )
-        .then( (json) => {
-          if (json.token) {
-            json.username = body.get('username')
-            chrome.storage.local.set(json)
-            const str = "<p>Login success! Saving...</p>"
-            document.getElementById('ws-content').innerHTML = str
-            chrome.runtime.sendMessage({'action': 'save'})
-            return true
-          } else {
-            console.log("login fail")
+        fetch(req)
+          .then( (response) => { return response.json() } )
+          .then( (json) => {
+            if (json.token) {
+              json.username = body.get('username')
+              chrome.storage.local.set(json)
+              const str = "<p>Login success! Saving...</p>"
+              document.getElementById('ws-content').innerHTML = str
+              chrome.runtime.sendMessage({'action': 'save'})
+              return true
+            } else {
+              console.log("login fail")
+            }
           }
-        }
-      )
+        )
+      })
     })
 
     document.getElementById("ws-content").appendChild(authForm)

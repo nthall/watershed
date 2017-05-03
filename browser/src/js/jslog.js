@@ -7,8 +7,8 @@ export default function jslog (msg) {
     }
 
     if (items.token) {
-      getDomain().then( (domain) => {
-        const uri = domain + 'jslog/'
+      chrome.runtime.sendMessage({'action': 'getDomain'}, (response) => {
+        const uri = response.domain + 'jslog/'
         const method = "POST"
         const authorizationHeader = "Token " + items.token
         const headers = new Headers({

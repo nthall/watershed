@@ -1,5 +1,3 @@
-import getDomain from './getDomain'
-
 export default class UI {
   static message(payload) {
     chrome.tabs.query({active: true, lastFocusedWindow: true}, (tabs) => {
@@ -74,8 +72,8 @@ export default class UI {
     authForm.addEventListener('submit', (event) => {
       event.preventDefault()
       const body = new FormData(event.target)
-      getDomain().then( (domain) => {
-        let req = new Request(domain + "authtoken/", {
+      chrome.runtime.sendMessage({'action': 'getDomain'}, (response) => {
+        let req = new Request(response.domain + "authtoken/", {
           method: "POST",
           body 
         })

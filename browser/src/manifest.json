@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "Watershed Music Player",
     "short_name": "Watershed",
-    "version": "0.3.6",
+    "version": "0.3.8",
     "icons": {
         "16": "media/watershed-icon-16.png",
         "19": "media/watershed-icon-transparent-19.png",
@@ -27,17 +27,16 @@
         "storage",
         "http://*/",
         "https://*/",
-        "contextMenus",
-        "management"
+        "contextMenus"
     ],
     "content_scripts": [
         {
-            "matches": ["https://watershed.nthall.com/", "http://watershed-dev.nthall.com/"],
+            "matches": ["https://watershed.nthall.com/", "https://watershed-dev.nthall.com/"],
             "js": ["js/player.js"]
         },
         {
             "matches": ["<all_urls>"],
-            "exclude_matches": ["https://watershed.nthall.com/", "http://watershed-dev.nthall.com/"],
+            "exclude_matches": ["https://watershed.nthall.com/", "https://watershed-dev.nthall.com/"],
             "js": ["js/content.js"],
             "css": ["css/main.css"]
         }

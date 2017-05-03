@@ -60,7 +60,7 @@ chrome.browserAction.onClicked.addListener( (tab) => {
   return save()
 })
 
-chrome.runtime.onMessage.addListener(function(data) {
+chrome.runtime.onMessage.addListener(function(data, sender, sendResponse) {
   if (chrome.runtime.lastError) { 
     console.log(chrome.runtime.lastError)
   }
@@ -68,6 +68,11 @@ chrome.runtime.onMessage.addListener(function(data) {
     if (data.action == 'save') {
       UI.message({'action': 'saving'})
       return save()
+    } else if (data.action == 'getDomain') {
+      getDomain().then( (domain) => {
+        sendResponse({domain})
+      })
+      return true
     }
   }
 })

@@ -18,3 +18,4 @@ beautifulsoup4
 html5lib
 psycopg2
 django-extensions==1.9.9
+raven

@@ -58,7 +58,7 @@ class Scraper():
                 return i
 
         twitter = self.soup.find('meta', property="twitter:site")
-        if twitter.attrs['content'] == "bandcamp":
+        if twitter.attrs['content'] == "@bandcamp":
             return 1
         else:
             logger.error('no platform found for uri: {}'.format(self.uri))

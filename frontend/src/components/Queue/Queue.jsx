@@ -35,7 +35,7 @@ export default class Queue extends React.Component {
     this.deleteItem = this.deleteItem.bind(this)
   }
 
-  loadItemsFromServer() {
+  loadItemsFromServer(get_position=false) {
     const auth = this.props.user.header()
     const deferred_list = $.ajax({
       url: '/item/',
@@ -68,7 +68,11 @@ export default class Queue extends React.Component {
               // tbh i have no idea if this branch makes sense or is useful.
               return prevState
             } else {
-              return {items, position}
+              if (get_position) {
+                return {items, position}
+              } else {
+                return {items}
+              }
             }
           })
         }
@@ -87,23 +91,14 @@ export default class Queue extends React.Component {
     if (!this.refreshing) {
       this.refreshing = true
 
-      let payload = this.state.items.map((item) => {
-        const whitelist = ['id', 'position']
-        let output = {}
-
-        for (let i=0, l=whitelist.length; i < l; i++) {
-          output[whitelist[i]] = item[whitelist[i]]
-        }
-
-        return output
-      })
-
+      let payload = {position: this.state.position}
+      
       const auth = this.props.user.header()
       const deferred = $.ajax({
         headers: {
           Authorization: auth
         },
-        url: '/item/',
+        url: '/position/',
         method: 'PATCH',
         cache: false,
         dataType: 'json',
@@ -155,7 +150,7 @@ export default class Queue extends React.Component {
   }
 
   componentDidMount() {
-    this.loadItemsFromServer().then( () => {
+    this.loadItemsFromServer(true).then( () => {
       setInterval(this.loadItemsFromServer, this.refreshInterval)
     })
   }

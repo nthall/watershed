@@ -19,12 +19,13 @@ export default class Queue extends React.Component {
     super(props)
     this.state = {
       items: [],
-      history: false
+      history: false,
+      position: 0
     }
     this.updateServer = false  // set true to send update to server
     this.refreshing = false
     this.refreshInterval = 5000
-    
+
     this.loadItemsFromServer = this.loadItemsFromServer.bind(this)
     this.advanceList = this.advanceList.bind(this)
     this.moveItem = this.moveItem.bind(this)
@@ -35,9 +36,8 @@ export default class Queue extends React.Component {
   }
 
   loadItemsFromServer() {
-    //todo: only add new items maybe
     const auth = this.props.user.header()
-    const deferred = $.ajax({
+    const deferred_list = $.ajax({
       url: '/item/',
       headers: {
         Authorization: auth
@@ -47,18 +47,33 @@ export default class Queue extends React.Component {
       method: 'GET'
     })
 
-    deferred.done(function(data, textStatus, jqXHR) {
-      if ((jqXHR.status === 200) && !(this.updateServer)) {
-        // this is an attempt to further safeguard against the 502 flail, idk
-        this.setState( (prevState, props) => {
-          if (data.length == 0) {
-            return prevState
-          } else {
-            return {items: data}
-          }
-        })
-      }
-    }.bind(this))
+    const deferred_position = $.ajax({
+      url: '/position/',
+      headers: {
+        Authorization: auth
+      },
+      cache: false,
+      dataType: 'json',
+      method: 'Get'
+    })
+
+    let deferred = $.when(deferred_list, deferred_position)
+      .done(function(items_result, position_result) {
+        let items = items_result[0]
+        let position = position_result[0].position || 0
+        if (!(this.updateServer)) {
+          // this is an attempt to further safeguard against the 502 flail, idk
+          this.setState( (prevState, props) => {
+            if ((items.length == 0))  {
+              // tbh i have no idea if this branch makes sense or is useful.
+              return prevState
+            } else {
+              return {items, position}
+            }
+          })
+        }
+      }.bind(this)
+    )
 
     return deferred
   } 
@@ -104,7 +119,6 @@ export default class Queue extends React.Component {
   }
 
   deleteItem(item) {
-    //todo!! deleteItem breaks queue positioning currently.
     this.updateServer = true
     const auth = this.props.user.header()
     const deferred = $.ajax({
@@ -134,37 +148,14 @@ export default class Queue extends React.Component {
     this.updateServer = true
     const oldpos = target.position
     this.setState( (prevState, props) => { 
-      //todo: update to account for History vs Playlist
       return {
-        items: prevState.items.map((item) => {
-          if (item === target) {
-            item.position = newpos
-          } else if (oldpos > newpos) {
-            if ((item.position >= newpos) && (item.position < oldpos)) {
-              item.position =  item.position + 1
-            }
-          } else {
-            if ((item.position <= newpos) && (item.position > oldpos)) {
-              item.position =  item.position - 1
-            }
-          }
-          return item
-        })
+        items: prevState.items.splice(newpos, 0, prevState.items.splice(prevState.items.indexOf(target)))
       }
     })
   }
 
   componentDidMount() {
     this.loadItemsFromServer().then( () => {
-    
-      //todo: better check lol fuck
-      let check = this.state.items.filter( (item) => { return item.position == 0 })
-      if (check.length == 0) {
-        jslog("we got either a new or a bad queue state. advancing list.", "Queue", "componentDidMount");
-        console.log("nothing in position0, dang")
-        this.advanceList()
-      }
-      
       setInterval(this.loadItemsFromServer, this.refreshInterval)
     })
   }
@@ -179,10 +170,7 @@ export default class Queue extends React.Component {
     this.updateServer = true
     this.setState((prevState, props) => {
       return {
-        items: prevState.items.map((item) => {
-          item.position = item.position - 1
-          return item
-        })
+        position: prevState.position + 1
       }
     })
   }
@@ -202,14 +190,14 @@ export default class Queue extends React.Component {
       }).sort(function(a,b) { return a.props.data.position - b.props.data.position })
 
     all.forEach( (item) => {
-      if (item.props.data.position < 0) {
+      if (item.props.data.position < this.state.position) {
         History.push(item)
-      } else if (item.props.data.position > 0) {
+      } else if (item.props.data.position > this.state.position) {
         Playlist.push(item)
       }
     })
 
-    const currentItem = this.state.items.filter((item) => { return item.position == 0 })[0]
+    const currentItem = this.state.items.filter((item) => { return item.position == this.state.position })[0]
     let Player = false
     if (typeof currentItem !== 'undefined') {
       Player = getPlayer({

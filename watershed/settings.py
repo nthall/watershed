@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'rest_framework.authtoken',
     'rest_framework_bulk',
     'webpack_loader',
+    'django_extensions',
 
     # app
     'customauth.apps.CustomauthConfig',

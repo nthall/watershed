@@ -21,7 +21,7 @@ SECRET_KEY = os.getenv('WATERSHED_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('watershed_dev')
 
-ALLOWED_HOSTS = ['watershed.nthall.com']
+ALLOWED_HOSTS = ['watershed-dev.nthall.com']
 
 
 # Application definition

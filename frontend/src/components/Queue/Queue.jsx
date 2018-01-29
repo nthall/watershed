@@ -26,7 +26,8 @@ export default class Queue extends React.Component {
     this.refreshing = false
     this.refreshInterval = 5000
 
-    this.loadItemsFromServer = this.loadItemsFromServer.bind(this)
+    this.serverCheck = this.serverCheck.bind(this)
+    this.initialLoad = this.initialLoad.bind(this)
     this.advanceList = this.advanceList.bind(this)
     this.moveItem = this.moveItem.bind(this)
     this.toggleDisplay = this.toggleDisplay.bind(this)
@@ -35,16 +36,16 @@ export default class Queue extends React.Component {
     this.deleteItem = this.deleteItem.bind(this)
   }
 
-  loadItemsFromServer(get_position=false) {
+  initialLoad() {
     const auth = this.props.user.header()
-    const deferred_list = $.ajax({
+    const deferred_items = $.ajax({
       url: '/item/',
       headers: {
-        Authorization: auth
+        authorization: auth
       },
       cache: false,
       dataType: 'json',
-      method: 'GET'
+      method: 'get'
     })
 
     const deferred_position = $.ajax({
@@ -57,7 +58,7 @@ export default class Queue extends React.Component {
       method: 'Get'
     })
 
-    let deferred = $.when(deferred_list, deferred_position)
+    let deferred = $.when(deferred_items, deferred_position)
       .done(function(items_result, position_result) {
         let items = items_result[0]
         let position = position_result[0].position || 0
@@ -65,14 +66,10 @@ export default class Queue extends React.Component {
           // this is an attempt to further safeguard against the 502 flail, idk
           this.setState( (prevState, props) => {
             if ((items.length == 0))  {
-              // tbh i have no idea if this branch makes sense or is useful.
+              // tbh i have no idea if this branch makes sense or is useful post queue-refactor
               return prevState
             } else {
-              if (get_position) {
-                return {items, position}
-              } else {
-                return {items}
-              }
+              return {items, position}
             }
           })
         }
@@ -82,19 +79,53 @@ export default class Queue extends React.Component {
     return deferred
   } 
 
+  serverCheck() {
+    const auth = this.props.user.header()
+    const deferred_items = $.ajax({
+      url: '/item/',
+      headers: {
+        authorization: auth
+      },
+      cache: false,
+      dataType: 'json',
+      method: 'get'
+    }).done(function(result, textStatus, jqXHR) {
+      if ((jqXHR.status === 200) && !(this.updateServer)) {
+        this.setState( (prevState, props) => {
+          return {items: result}
+        })
+      }
+    }.bind(this))
+
+    return deferred_items
+  }
+
   refreshData() {
     // send updated positions, etc. to server and *then* loadItemsFromServer again
     // (rather than just use the response data to update state -- just to make sure
     //  we get the full list)
     // NB: only send what we need to send to avoid overwriting new info on server
+    // TODO: this needs work lol  (1/20)
 
     if (!this.refreshing) {
       this.refreshing = true
 
-      let payload = {position: this.state.position}
+      let position_payload = {position: this.state.position}
+
+
+      let items_payload = this.state.items.map((item) => {
+        const whitelist = ['id', 'position']
+        let output = {}
+
+        for (let i=0, l=whitelist.length; i < l; i++) {
+          output[whitelist[i]] = item[whitelist[i]]
+        }
+
+        return output
+      })
       
       const auth = this.props.user.header()
-      const deferred = $.ajax({
+      const deferred_position = $.ajax({
         headers: {
           Authorization: auth
         },
@@ -103,11 +134,29 @@ export default class Queue extends React.Component {
         cache: false,
         dataType: 'json',
         contentType: 'application/json',
-        data: JSON.stringify(payload),
+        data: JSON.stringify(position_payload),
         processData: false,
       })
 
-      deferred.done(function() { this.updateServer = false; this.refreshing = false; this.loadItemsFromServer() }.bind(this))
+      const deferred_items = $.ajax({
+        headers: {
+          Authorization: auth
+        },
+        url: '/item/',
+        method: 'PATCH',
+        cache: false,
+        dataType: 'json',
+        contentType: 'application/json',
+        data: JSON.stringify(items_payload),
+        processData: false,
+      })
+
+      let deferred = $.when(deferred_items, deferred_position)
+        .done(function() { 
+          this.updateServer = false
+          this.refreshing = false
+          this.serverCheck() 
+        }.bind(this))
 
       return deferred
     }
@@ -131,27 +180,40 @@ export default class Queue extends React.Component {
     const del = item
 
     this.setState( (prevState, props) => {
-      return {
-        items: prevState.items.filter( (item) => {
-          return (item !== del)
-        })
-      }
+      let items = prevState.items.filter( (item) => {
+        return (item !== del)
+      })
+      items.map( (item, index) => {
+        item.position = index
+      })
+
+      return { items }
     })
   }
 
   moveItem(target, newpos) {
+    if (typeof newpos === "string") {
+      if (newpos === "now") {
+        newpos = this.state.position
+      } else if (newpos === "next") {
+        newpos = this.state.position + 1
+      }
+    }
     this.updateServer = true
     const oldpos = target.position
     this.setState( (prevState, props) => { 
-      return {
-        items: prevState.items.splice(newpos, 0, prevState.items.splice(prevState.items.indexOf(target)))
-      }
+      let items = prevState.items
+      items.splice(newpos, 0, items.splice(oldpos, 1)[0])
+      items.map( (item, index) => {
+        item.position = index
+      })
+      return {items: items}
     })
   }
 
   componentDidMount() {
-    this.loadItemsFromServer(true).then( () => {
-      setInterval(this.loadItemsFromServer, this.refreshInterval)
+    this.initialLoad().then( () => {
+      setInterval(this.serverCheck, this.refreshInterval)
     })
   }
 

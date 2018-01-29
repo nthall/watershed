@@ -13,11 +13,11 @@ class ItemControls extends React.Component {
   }
 
   playNow() {
-    this.props.move(0)
+    this.props.move("now")
   }
 
   playNext() {
-    this.props.move(1)
+    this.props.move("next")
   }
 
   moveUp() {
@@ -82,11 +82,17 @@ class Item extends React.Component {
 					{this.props.data.artist}{this.state.sep}{this.props.data.title}
 				</span>
 
-        <ItemControls move={this.move} delete={this.delete} />
+        <ItemControls move={this.move} delete={this.delete} position={this.props.data.position} />
       </li>
     )
   }
 
+}
+
+ItemControls.propTypes = {
+  move: React.PropTypes.func.isRequired,
+  delete: React.PropTypes.func.isRequired,
+  position: React.PropTypes.number.isRequired
 }
 
 Item.propTypes = {

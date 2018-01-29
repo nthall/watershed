@@ -8,3 +8,10 @@ class IsOwner(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
         return obj.user == request.user
+
+
+class IsSelf(permissions.BasePermission):
+    message = 'Nah, not cool'
+
+    def has_object_permission(self, request, view, obj):
+        return obj == request.user

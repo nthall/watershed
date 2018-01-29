@@ -40,6 +40,8 @@ class User(AbstractBaseUser):
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
 
+    position = models.IntegerField(default=0)  # this is the play pointer
+
     objects = UserManager()
 
     def get_full_name(self):

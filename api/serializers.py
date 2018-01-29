@@ -13,20 +13,15 @@ User = get_user_model()
 logger = logging.getLogger(__name__)
 
 
-class UserSerializer(serializers.ModelSerializer):
-    queue = serializers.PrimaryKeyRelatedField(
-        many=True,
-        queryset=Item.objects.filter(position__gte=0)
-    )
-
+class PositionSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'queue')
+        fields = ('id', 'position',)
 
 
 class ItemSerializer(BulkSerializerMixin, serializers.ModelSerializer):
     '''
-    todo: validation -- only supported platforms
+    todo: extra validation -- only supported platforms
             (this should probably be frontend's job, but, just to be sure)
     '''
     class Meta:

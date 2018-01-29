@@ -40,11 +40,14 @@ INSTALLED_APPS = (
     'rest_framework.authtoken',
     'rest_framework_bulk',
     'webpack_loader',
+    'django_extensions',
+    'raven.contrib.django.raven_compat',
 
     # app
     'customauth.apps.CustomauthConfig',
     'api.apps.ApiConfig',
-    'player.apps.PlayerConfig'
+    'player.apps.PlayerConfig',
+    'stats.apps.StatsConfig'
 )
 
 AUTH_USER_MODEL = 'customauth.User'
@@ -142,6 +145,14 @@ WEBPACK_LOADER = {
 }
 
 
+# LOGGING SETTINGS BELOW!
+import raven
+
+RAVEN_CONFIG = {
+    'dsn': 'https://69327d4caef74ac694a6a76e93c96524:a9698b5624fe450b90626dbee1746e92@sentry.io/274934',  # noqa
+    'release': raven.fetch_git_sha(BASE_DIR),
+}
+
 if DEBUG:
     default_handler = 'file'
 
@@ -179,32 +190,35 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
             'formatter': 'verbose',
-
+        },
+        'sentry': {
+            'level': 'ERROR',
+            'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler'
         }
     },
     'loggers': {
         'django': {
-            'handlers': ['mail_admins'],
+            'handlers': [default_handler, 'mail_admins', 'sentry'],
             'level': 'ERROR',
             'propagate': True,
         },
         'watershed': {
-            'handlers': [default_handler],
+            'handlers': [default_handler, 'sentry'],
             'level': 'DEBUG',
             'propagate': False,
         },
         'api': {
-            'handlers': [default_handler],
+            'handlers': [default_handler, 'sentry'],
             'level': 'DEBUG',
             'propagate': True,
         },
         'rest_framework': {
-            'handlers': [default_handler],
+            'handlers': [default_handler, 'sentry'],
             'level': 'ERROR',
             'propagate': True,
         },
         'customauth': {
-            'handlers': [default_handler],
+            'handlers': [default_handler, 'sentry'],
             'level': 'DEBUG',
             'propagate': True,
         },

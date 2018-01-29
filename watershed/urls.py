@@ -22,6 +22,7 @@ import customauth.views as authviews
 admin.autodiscover()
 
 urlpatterns = [
+    url(r'^admin/stats/', include('stats.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^register/', authviews.register_rest),

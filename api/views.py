@@ -10,15 +10,15 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 
 from rest_framework import permissions, status
-from rest_framework.generics import ListCreateAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateAPIView
 from rest_framework.response import Response
 from rest_framework_bulk.mixins import BulkUpdateModelMixin
 from rest_framework.authtoken.models import Token
 
 from models import Item
-from permissions import IsOwner
-from scraper import Scraper
-from serializers import ItemSerializer
+from permissions import IsOwner, IsSelf
+from scraper import Scraper, UnsupportedPlatformError
+from serializers import ItemSerializer, PositionSerializer
 
 User = get_user_model()
 
@@ -39,7 +39,11 @@ class Queue(ListCreateAPIView):
     @method_decorator(csrf_exempt)
     def post(self, request, format=None):
         data = {"user": request.user.pk}
-        scrape = Scraper(request.data.get('uri'))
+        try:
+            scrape = Scraper(request.data.get('uri'))
+        except UnsupportedPlatformError:
+            raise
+
         data.update(scrape.result())
 
         post = request.data.copy()
@@ -89,10 +93,20 @@ class ItemDetail(BulkUpdateModelMixin, ListCreateAPIView):
             item_id = request.data.get("id")
             item = Item.objects.get(pk=item_id, user=user)
             item.delete()
-            # todo: this leaves a hole in the queue
             return Response(status=status.HTTP_204_NO_CONTENT)
         except Item.DoesNotExist:
             raise Http404
+
+
+class Position(RetrieveUpdateAPIView):
+    '''
+    update user's position in list
+    '''
+    permission_classes = (permissions.IsAuthenticated, IsSelf,)
+    serializer_class = PositionSerializer
+
+    def get_object(self):
+        return User.objects.get(pk=self.request.user.pk)
 
 
 class JsLog(View):

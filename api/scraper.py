@@ -5,22 +5,16 @@ import urlparse
 
 import requests
 from bs4 import BeautifulSoup
+from rest_framework.exceptions import UnsupportedMediaType
 
 from models import PLATFORMS
 
 logger = logging.getLogger(__name__)
 
 
-class UnsupportedPlatformError(Exception):
+class UnsupportedPlatformError(UnsupportedMediaType):
     '''
     Supported platform not found :(
-    '''
-    pass
-
-
-class ParseError(Exception):
-    '''
-    something went wrong while parsing, dang
     '''
     pass
 
@@ -52,13 +46,22 @@ class Scraper():
         '''
         first check if platform name in urlstring.
         if not, assume bandcamp, try to verify.
+        this is going to become untenable and
+        will need a fancier solution eventually
+        - possibly refactor all this into classes for
+        each platform that we can loop through to run the check,
+        and if matched, return the data or smth
         '''
         for i, v in PLATFORMS[1:]:  # index 0 is "Unknown"
             if v.lower() in self.uri:
                 return i
 
+        # check for YT shortlinks
+        if "youtu.be" in self.uri:
+            return 2
+
         twitter = self.soup.find('meta', property="twitter:site")
-        if twitter.attrs['content'] == "@bandcamp":
+        if twitter.attrs['content'] in ("bandcamp", "@bandcamp"):
             return 1
         else:
             logger.error('no platform found for uri: {}'.format(self.uri))

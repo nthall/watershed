@@ -17,7 +17,7 @@ from rest_framework.authtoken.models import Token
 
 from models import Item
 from permissions import IsOwner, IsSelf
-from scraper import Scraper
+from scraper import Scraper, UnsupportedPlatformError
 from serializers import ItemSerializer, PositionSerializer
 
 User = get_user_model()
@@ -39,7 +39,11 @@ class Queue(ListCreateAPIView):
     @method_decorator(csrf_exempt)
     def post(self, request, format=None):
         data = {"user": request.user.pk}
-        scrape = Scraper(request.data.get('uri'))
+        try:
+            scrape = Scraper(request.data.get('uri'))
+        except UnsupportedPlatformError:
+            raise
+
         data.update(scrape.result())
 
         post = request.data.copy()

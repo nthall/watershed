@@ -18,6 +18,9 @@ chrome.runtime.onMessage.addListener( (data) => {
       case 'saved':
         ui.saveSuccess().fadeOut()
         break
+      case 'error':
+        ui.error(data.msg).fadeOut()
+        break
     }
   }
 })

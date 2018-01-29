@@ -19,3 +19,5 @@ psycopg2
 djangorestframework
 djangorestframework-bulk
 django-webpack-loader
+django-extensions==1.9.9
+raven

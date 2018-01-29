@@ -1,3 +1,4 @@
+import getDomain from './getDomain'
 import UI from './UI'
 
 const onSave = function(data, textStatus, jqXHR) {
@@ -9,6 +10,8 @@ const onErr = function(jqXHR, textStatus, errorThrown) {
   if (jqXHR.status === 401) {
     // some kind of error message would be good
     UI.message({'action': 'force_login', 'msg': jqXHR.responseText})
+  } else if (jqXHR.status === 415) {
+    UI.message({'action': 'error', 'msg': "No supported platform was found."})
   }
 }
 
@@ -29,23 +32,22 @@ const send = function(data) {
     }
 
     if (items.token) {
-      const url = "https://watershed.nthall.com/queue/"
-      const method = "POST"
-      const authorizationHeader = "Token " + items.token
-      const headers = new Headers({
-        Authorization: authorizationHeader,
-        "Content-Type": "application/json"
-      })
-      let req = new Request(url, {
-        method,
-        body: JSON.stringify(data),
-        headers
-      })
+      getDomain().then( (domain) => {
+        const uri = domain + "queue/"
+        const method = "POST"
+        const authorizationHeader = "Token " + items.token
+        const headers = new Headers({
+          Authorization: authorizationHeader,
+          "Content-Type": "application/json"
+        })
+        let req = new Request(uri, {
+          method,
+          body: JSON.stringify(data),
+          headers
+        })
 
-      fetch(req).then(onSave, onErr)
-
-      // TODO: after moving to pocket-style feedback window,
-      // use it to display a feedback message in onSave/onErr
+        fetch(req).then(onSave, onErr)
+      })
     } else {
       UI.message({'action': 'force_login'})
     }
@@ -60,7 +62,7 @@ chrome.browserAction.onClicked.addListener( (tab) => {
   return save()
 })
 
-chrome.runtime.onMessage.addListener(function(data) {
+chrome.runtime.onMessage.addListener(function(data, sender, sendResponse) {
   if (chrome.runtime.lastError) { 
     console.log(chrome.runtime.lastError)
   }
@@ -68,6 +70,11 @@ chrome.runtime.onMessage.addListener(function(data) {
     if (data.action == 'save') {
       UI.message({'action': 'saving'})
       return save()
+    } else if (data.action == 'getDomain') {
+      getDomain().then( (domain) => {
+        sendResponse({domain})
+      })
+      return true
     }
   }
 })

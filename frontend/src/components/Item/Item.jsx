@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import FontAwesome from 'react-fontawesome'
 
 import PlatformMap from '../../classes/PlatformMap'
@@ -90,22 +91,22 @@ class Item extends React.Component {
 }
 
 ItemControls.propTypes = {
-  move: React.PropTypes.func.isRequired,
-  delete: React.PropTypes.func.isRequired,
-  position: React.PropTypes.number.isRequired
+  move: PropTypes.func.isRequired,
+  delete: PropTypes.func.isRequired,
+  position: PropTypes.number.isRequired
 }
 
 Item.propTypes = {
-  deleteItem: React.PropTypes.func.isRequired,
-  moveItem: React.PropTypes.func.isRequired,
-  data: React.PropTypes.shape({
-    id: React.PropTypes.number.isRequired,
-    platform: React.PropTypes.number.isRequired,
-    user: React.PropTypes.number.isRequired,
-    title: React.PropTypes.string,
-    artist: React.PropTypes.string,
-    embed: React.PropTypes.string,
-    uri: React.PropTypes.string
+  deleteItem: PropTypes.func.isRequired,
+  moveItem: PropTypes.func.isRequired,
+  data: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    platform: PropTypes.number.isRequired,
+    user: PropTypes.number.isRequired,
+    title: PropTypes.string,
+    artist: PropTypes.string,
+    embed: PropTypes.string,
+    uri: PropTypes.string
   })
 }
 

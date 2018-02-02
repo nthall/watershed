@@ -49,21 +49,21 @@ module.exports = [{
         loader: 'babel-loader', 
         query: {
           //specify that we will be dealing with React code
-          presets: ['react', 'es2015'] 
+          presets: ['react', 'env'] 
         }
       },
       {
         test: /\.scss$/,
-        loaders: ['style', 'css', 'sass']
+        loaders: ['style-loader', 'css-loader', 'sass-loader']
       }
     ]
   },
   
   resolve: {
     //tells webpack where to look for modules
-    modulesDirectories: ['node_modules'],
+    modules: ['node_modules'],
     //extensions that should be used to resolve modules
-    extensions: ['', '.js', '.jsx'] 
+    extensions: ['.js', '.jsx'] 
   }   
 },
 {
@@ -75,7 +75,7 @@ module.exports = [{
     player: './src/js/player'
   },
   output: {
-    path: './browser/dist/',
+    path: path.resolve('./browser/dist/'),
     filename: 'js/[name].js'
   },
 
@@ -96,7 +96,7 @@ module.exports = [{
         exclude: /node_modules/,
         loader: 'babel-loader',
         query: {
-          presets: ['es2015']
+          presets: ['env']
         }
       }
     ]

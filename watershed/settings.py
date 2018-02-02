@@ -19,9 +19,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.getenv('WATERSHED_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('watershed_dev')
+DEBUG = os.getenv('watershed')
 
-ALLOWED_HOSTS = ['watershed-dev.nthall.com']
+ALLOWED_HOSTS = ['watershed.nthall.com']
 
 
 # Application definition

@@ -88,17 +88,16 @@ WSGI_APPLICATION = 'watershed.wsgi.application'
 
 
 # Database
-if DEBUG:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'watershed',
-            'USER': 'www-data',
-            'PASSWORD': os.getenv('WATERSHED_POSTGRESQL_PASSWORD'),
-            'HOST': '/var/run/postgresql/',
-            'PORT': 5434
-        }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'watershed',
+        'USER': 'www-data',
+        'PASSWORD': os.getenv('WATERSHED_POSTGRESQL_PASSWORD'),
+        'HOST': '/var/run/postgresql/',
+        'PORT': 5434
     }
+}
 
 
 # Internationalization
@@ -153,8 +152,7 @@ RAVEN_CONFIG = {
     'release': raven.fetch_git_sha(BASE_DIR),
 }
 
-if DEBUG:
-    default_handler = 'file'
+default_handler = 'file'
 
 LOGGING = {
     'version': 1,

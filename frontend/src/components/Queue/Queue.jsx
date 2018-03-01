@@ -180,6 +180,11 @@ export default class Queue extends React.Component {
     const del = item
 
     this.setState( (prevState, props) => {
+      let position = prevState.position
+      if (del.position < position) {
+        position = position - 1
+      }
+
       let items = prevState.items.filter( (item) => {
         return (item !== del)
       })
@@ -187,27 +192,33 @@ export default class Queue extends React.Component {
         item.position = index
       })
 
-      return { items }
+      return { items, position }
     })
   }
 
-  moveItem(target, newpos) {
-    if (typeof newpos === "string") {
-      if (newpos === "now") {
-        newpos = this.state.position
-      } else if (newpos === "next") {
-        newpos = this.state.position + 1
+  moveItem(target, item_destination) {
+    const item_origin = target.position
+    let queue_position = this.state.position
+    if (typeof item_destination === "string") {
+      if (item_origin < queue_position) {
+        queue_position = queue_position - 1
+      }
+      if (item_destination === "now") {
+        item_destination = queue_position
+      } else if (item_destination === "next") {
+        item_destination = queue_position + 1
       }
     }
     this.updateServer = true
-    const oldpos = target.position
+
     this.setState( (prevState, props) => { 
+      let position = queue_position
       let items = prevState.items
-      items.splice(newpos, 0, items.splice(oldpos, 1)[0])
+      items.splice(item_destination, 0, items.splice(item_origin, 1)[0])
       items.map( (item, index) => {
         item.position = index
       })
-      return {items: items}
+      return { items, position }
     })
   }
 

@@ -76,11 +76,13 @@ class Item extends React.Component {
       style.display = 'none'
     }
 
+    let text = `${this.props.data.artist}${this.state.sep}${this.props.data.title}`
+
     return (
       <li className="queueItem" style={style}>
         <FontAwesome name={platform} className="icon" fixedWidth />
-				<span className="info">
-					{this.props.data.artist}{this.state.sep}{this.props.data.title}
+				<span className="info" title={text}>
+					{text}
 				</span>
 
         <ItemControls move={this.move} delete={this.delete} position={this.props.data.position} />

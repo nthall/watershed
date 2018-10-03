@@ -63,3 +63,9 @@
   margin: .5em;
   border-radius: .5em;
 }
+
+.error {
+  background-color: #d33682;
+  color: #eee8d5;
+  border-radius: .5em;
+}

@@ -90,6 +90,8 @@ export default class UI {
               return true
             } else {
               console.log("login fail")
+              error('Please try to log in again.')
+              return false
             }
           }
         )

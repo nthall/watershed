@@ -5,7 +5,9 @@ var BundleTracker = require('webpack-bundle-tracker');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 var CleanWebpackPlugin = require('clean-webpack-plugin');
 
-module.exports = [{
+module.exports = [
+{
+  name: 'site',
   //the base directory (absolute path) for resolving the entry option
   context: __dirname,
   //the entry point we created earlier. Note that './' means 
@@ -67,7 +69,8 @@ module.exports = [{
   }   
 },
 {
-  context: path.resolve(__dirname, "browser"),
+  name: 'browser',
+  context: path.resolve(__dirname, 'browser'),
   entry: {
     background: './src/js/background',
     bandcamp: './src/js/bandcamp',

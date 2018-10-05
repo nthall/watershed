@@ -1,5 +1,6 @@
 import getDomain from './getDomain'
 import UI from './UI'
+import jslog from './jslog'
 
 const onSave = function(data, textStatus, jqXHR) {
   UI.message({'action': 'saved'})
@@ -12,6 +13,9 @@ const onErr = function(jqXHR, textStatus, errorThrown) {
     UI.message({'action': 'force_login', 'msg': jqXHR.responseText})
   } else if (jqXHR.status === 415) {
     UI.message({'action': 'error', 'msg': "No supported platform was found."})
+  } else {
+    jslog('what the dang heck', errorThrown, textStatus, jqXHR.status)
+    UI.message({'action': 'error', 'msg': 'An unknown error occurred. Sorry :('})
   }
 }
 

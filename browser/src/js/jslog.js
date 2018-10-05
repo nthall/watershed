@@ -1,6 +1,6 @@
 import getDomain from './getDomain'
 
-export default function jslog (msg) {
+export default function jslog () {
   chrome.storage.local.get('token', (items) => {
     if (chrome.runtime.lastError) {
       console.log(chrome.runtime.lastError.message)
@@ -15,6 +15,8 @@ export default function jslog (msg) {
           Authorization: authorizationHeader,
           "Content-Type": "application/json"
         })
+
+        let msg = arguments.join(' ')
 
         let req = new Request(uri, {method, msg})
         fetch(req)

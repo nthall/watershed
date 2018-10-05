@@ -108,8 +108,9 @@ class Scraper():
 
         query = urlparse.urlparse(self.uri)
         qs = urlparse.parse_qs(query[4])
-        self.embed = qs['v'][0]
-        logger.debug("youtube - v = {}".format(self.embed))
+        if 'v' in qs.keys():
+            self.embed = qs['v'][0]
+            logger.debug("youtube - v = {}".format(self.embed))
         return
 
     def result(self):

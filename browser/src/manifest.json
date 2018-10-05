@@ -2,6 +2,11 @@
     "manifest_version": 2,
     "name": "Watershed Music Player",
     "short_name": "Watershed",
+    "applications": {
+        "gecko": {
+            "id": "watershed@nthall.com"
+        }
+    },
     "version": "0.3.8",
     "icons": {
         "16": "media/watershed-icon-16.png",

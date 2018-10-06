@@ -12,6 +12,9 @@ chrome.runtime.onMessage.addListener( (data) => {
           ui.error(data.msg)
         }
         break
+      case 'logout':
+        ui.logout()
+        break
       case 'saving':
         ui.saveProgress()
         break

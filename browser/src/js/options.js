@@ -1,4 +1,4 @@
-import 'logout' from './logout'
+import logout from './logout'
 
 document.onLoad( function () {
   document.getElementById('logout').addEventListener('click', () => {

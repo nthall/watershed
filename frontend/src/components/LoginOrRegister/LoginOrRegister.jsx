@@ -2,7 +2,7 @@ import React from 'react'
 import LoginForm from '../LoginForm/LoginForm'
 import RegisterForm from '../RegisterForm/RegisterForm'
 
-import style from './loginorregister.scss'
+import './loginorregister.scss'
 
 export default class LoginOrRegister extends React.Component {
   constructor(props) {
@@ -41,8 +41,8 @@ export default class LoginOrRegister extends React.Component {
             </a>
           </span>
         </div>
-        {this.state.register ? 
-          <RegisterForm submit={this.props.submit} /> 
+        {this.state.register ?
+          <RegisterForm submit={this.props.submit} />
           :
           <LoginForm submit={this.props.submit} />
         }

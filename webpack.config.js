@@ -39,7 +39,7 @@ module.exports = [
   ],
   
   module: {
-    loaders: [
+    rules: [
       //a regexp that tells webpack use the following loaders on all 
       //.js and .jsx files
       {
@@ -93,7 +93,7 @@ module.exports = [
   ],
 
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js/,
         exclude: /node_modules/,

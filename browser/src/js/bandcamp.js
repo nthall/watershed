@@ -1,3 +1,7 @@
+import * as Sentry from '@sentry/browser'
+
+Sentry.init({ dsn: 'https://69327d4caef74ac694a6a76e93c96524@sentry.io/274934' });
+
 const play = document.getElementById("big_play_button")
 
 const advance = function() {

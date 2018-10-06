@@ -5,14 +5,20 @@ h1 {
 }
 
 .toggle {
-    .active {
-        text-decoration: none;
-    }
+  margin-bottom: .5em;
 
-    .dormant {
-        border-bottom: 1px dashed $base00;
-        cursor: pointer;
-    }
+  .active {
+    text-decoration: none;
+  }
+
+  .dormant {
+    border-bottom: 1px dashed $base00;
+    cursor: pointer;
+  }
+}
+
+label {
+  display: block;
 }
 
 input {
@@ -21,7 +27,6 @@ input {
   background-color: $base3;
   color: $base00;
   margin: .5em;
-  padding: .5em;
   max-width: 100%;
   &:focus {
       outline: none;

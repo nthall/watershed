@@ -3,16 +3,9 @@ import FontAwesome from 'react-fontawesome'
 
 import AddForm from '../AddForm/AddForm'
 import Item from '../Item/Item'
-import { 
-  BandcampPlayer, 
-  YoutubePlayer,
-  SoundcloudPlayer,
-  getPlayer
-} from '../Player/Player'
+import { getPlayer } from '../Player/Player'
 
-import { jslog } from '../../common'
-
-import style from './queue.scss'
+import './queue.scss'
 
 export default class Queue extends React.Component {
   constructor(props) {
@@ -22,7 +15,7 @@ export default class Queue extends React.Component {
       history: false,
       position: 0
     }
-    this.updateServer = false  // set true to send update to server
+    this.updateServer = false // set true to send update to server
     this.refreshing = false
     this.refreshInterval = 5000
 
@@ -65,7 +58,7 @@ export default class Queue extends React.Component {
         if (!(this.updateServer)) {
           // this is an attempt to further safeguard against the 502 flail, idk
           this.setState( (prevState, props) => {
-            if ((items.length == 0))  {
+            if ((items.length == 0)) {
               // tbh i have no idea if this branch makes sense or is useful post queue-refactor
               return prevState
             } else {
@@ -255,7 +248,7 @@ export default class Queue extends React.Component {
 
     const all = this.state.items.map( (item) => {
         return <Item data={item} key={item.id} deleteItem={this.deleteItem} moveItem={this.moveItem} />
-      }).sort(function(a,b) { return a.props.data.position - b.props.data.position })
+      }).sort(function(a, b) { return a.props.data.position - b.props.data.position })
 
     all.forEach( (item) => {
       if (item.props.data.position < this.state.position) {

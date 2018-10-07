@@ -131,4 +131,7 @@ export default class UI {
     return this
   }
 
+  logout() {
+    document.getElementById('ws-content').innerHTML = "<p>Logged out \xF0\x9F\x91\x8B</p>"
+  }
 }

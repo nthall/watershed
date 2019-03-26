@@ -5,6 +5,5 @@ pid
 app.log*
 node_modules/
 frontend/bundles/*
-webpack-stats.json
-extension-stats.json
+*-stats.json
 browser/dist/

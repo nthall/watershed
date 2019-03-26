@@ -81,9 +81,9 @@ class Item extends React.Component {
     return (
       <li className="queueItem" style={style}>
         <FontAwesome name={platform} className="icon" fixedWidth />
-				<span className="info" title={text}>
-					{text}
-				</span>
+        <span className="info" title={text}>
+          {text}
+        </span>
 
         <ItemControls move={this.move} delete={this.delete} position={this.props.data.position} />
       </li>

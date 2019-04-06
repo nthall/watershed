@@ -46,7 +46,7 @@ class Scraper():
         '''
         first check if platform name in urlstring.
         if not, assume bandcamp, try to verify.
-        this is going to become untenable and
+        this is going to become untenable as platforms get added, and
         will need a fancier solution eventually
         - possibly refactor all this into classes for
         each platform that we can loop through to run the check,
@@ -61,7 +61,7 @@ class Scraper():
             return 2
 
         twitter = self.soup.find('meta', property="twitter:site")
-        if twitter.attrs['content'] in ("bandcamp", "@bandcamp"):
+        if twitter and twitter.attrs['content'] in ("bandcamp", "@bandcamp"):
             return 1
         else:
             logger.error('no platform found for uri: {}'.format(self.uri))
@@ -85,6 +85,7 @@ class Scraper():
         logger.debug(self.soup.title)
         # example raw titles:
         # Magic Tape 69 by The Magician | Free Listening on SoundCloud
+        # currently kinda sucks for artist pages and some other cases.
         parts = [i.strip() for i in self.soup.title.getText().split("|")]
         raw = parts[0].split(" by ")
         self.artist = raw[1].strip(" -")
@@ -111,6 +112,9 @@ class Scraper():
         if 'v' in qs.keys():
             self.embed = qs['v'][0]
             logger.debug("youtube - v = {}".format(self.embed))
+        elif 'playlist' in self.uri and 'list' in qs.keys():
+            # this is not enough to make lists work right; see trello for info
+            self.embed = qs['list'][0]
         return
 
     def result(self):

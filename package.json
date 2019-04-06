@@ -1,7 +1,7 @@
 {
   "name": "watershed-music",
   "version": "1.0.0",
-  "description": "player JS for watershed music app",
+  "description": "frontend/player for watershed music app",
   "main": "index.js",
   "scripts": {
     "test": "jstest"
@@ -9,8 +9,9 @@
   "author": "Noah Hall",
   "repository": {
     "type": "git",
-    "url": "https://github.com/nthall/watershed"
+    "url": "https://github.com/nthall/watershed.git"
   },
+  "private": true,
   "devDependencies": {
     "@sentry/browser": "4.0.6",
     "babel-core": "^6.26.0",

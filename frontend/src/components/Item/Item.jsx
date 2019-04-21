@@ -80,7 +80,7 @@ class Item extends React.Component {
 
     return (
       <li className="queueItem" style={style}>
-        <FontAwesome name={platform} className="icon" fixedWidth />
+        <FontAwesome name={platform} className="icon platform-icon" size="lg" fixedWidth />
         <span className="info" title={text}>
           {text}
         </span>

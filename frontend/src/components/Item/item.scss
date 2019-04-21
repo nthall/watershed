@@ -7,9 +7,23 @@
 	padding-left: 1em;
 	padding-top: .5em;
 	padding-bottom: .5em;
+  display: flex;
+    
+  * {
+    flex-wrap:nowrap;
+  }
+
+  .platform-icon {
+    line-height: 1.5em;
+    flex: none;
+  }
 
 	span.info {
+    display: block;
+    flex: auto;
 		margin-left: 1em;
+    overflow: hidden;
+    white-space: nowrap;
     text-overflow: ellipsis;
 	}
 
@@ -21,11 +35,8 @@
 	}
 
   .itemControls {
+    flex: none;
     margin-right: 1em;
-    float: right;
-    &:after {
-      clear: both;
-    }
     button {
       display: inline-block;
       margin-top: 0;

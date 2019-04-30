@@ -8,6 +8,7 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 module.exports = [
 {
   name: 'site',
+  mode: 'development',
   // the base directory (absolute path) for resolving the entry option
   context: __dirname,
   // the entry point we created earlier. Note that './' means 
@@ -74,6 +75,7 @@ module.exports = [
 },
 {
   name: 'browser',
+  mode: 'development',
   context: path.resolve(__dirname, 'browser'),
   entry: {
     background: './src/js/background',

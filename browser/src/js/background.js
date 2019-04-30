@@ -14,6 +14,8 @@ const onErr = function(jqXHR, textStatus, errorThrown) {
   if (jqXHR.status === 401) {
     // some kind of error message would be good
     UI.message({'action': 'force_login', 'msg': jqXHR.responseText})
+  } else if (jqXHR.status === 400) {
+    UI.message({'action': 'error', 'msg': jqXHR.responseText})
   } else if (jqXHR.status === 415) {
     UI.message({'action': 'error', 'msg': "No supported platform was found."})
   } else {

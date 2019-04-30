@@ -3,7 +3,8 @@ from __future__ import unicode_literals
 import json
 import logging
 
-from django.http import HttpResponse, Http404, HttpResponseForbidden
+from django.http import HttpResponse, Http404, HttpResponseBadRequest,\
+    HttpResponseForbidden
 from django.contrib.auth import get_user_model
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
@@ -39,10 +40,17 @@ class Queue(ListCreateAPIView):
     @method_decorator(csrf_exempt)
     def post(self, request, format=None):
         data = {"user": request.user.pk}
+        # previously here we listened for the UnsupportedPlatformError and
+        # re-raised it. not sure why. but that will either swallow other Errors
+        # or require great duplication eventually. ugh.
+        uri = request.data.get('uri')
+        if not uri:
+            return HttpResponseBadRequest("No valid uri was provided.")
+
         try:
-            scrape = Scraper(request.data.get('uri'))
+            scrape = Scraper(uri)
         except UnsupportedPlatformError:
-            raise
+            return HttpResponseBadRequest("Unrecognized platform.")
 
         data.update(scrape.result())
 

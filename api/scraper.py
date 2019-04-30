@@ -68,16 +68,21 @@ class Scraper():
             raise UnsupportedPlatformError("No supported platform found :(")
 
     def bandcamp(self):
-        artist = self.soup.select("span[itemprop='byArtist'] > a")[0]
-        self.artist = artist.getText().strip()
+        try:
+            artist = self.soup.select("span[itemprop='byArtist'] > a")[0]
+            self.artist = artist.getText().strip()
 
-        title = self.soup.find("h2",
-                               {'class': 'trackTitle', 'itemprop': 'name'})
-        self.title = title.getText().strip()
+            title = self.soup.find("h2",
+                                   {'class': 'trackTitle', 'itemprop': 'name'})
+            self.title = title.getText().strip()
 
-        meta = self.soup.find("meta", property='og:video:secure_url')
-        embed = dict(meta.attrs)['content']
-        self.embed = embed.replace("tracklist=false", "tracklist=true")
+            meta = self.soup.find("meta", property='og:video:secure_url')
+            embed = dict(meta.attrs)['content']
+            self.embed = embed.replace("tracklist=false", "tracklist=true")
+        except IndexError:
+            # this is the failure case for pages on the bandcamp site
+            # that aren't streamable
+            raise UnsupportedPlatformError("No eligible content found.")
 
         return
 

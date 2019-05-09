@@ -1,6 +1,6 @@
 db.sqlite3
 .venv
-static/
+/static/
 pid
 app.log*
 node_modules/

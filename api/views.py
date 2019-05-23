@@ -85,6 +85,8 @@ class ItemDetail(BulkUpdateModelMixin, ListCreateAPIView):
             user = User.objects.get(pk=user_id)
             return Item.objects.filter(pk=item_id, user=user)
         except Item.DoesNotExist:
+            # TODO: don't raise an exception, just return a 404 response
+            # ORRR: just tell sentry to ignore these maybe
             raise Http404
 
     def patch(self, request, *args, **kwargs):
@@ -92,7 +94,7 @@ class ItemDetail(BulkUpdateModelMixin, ListCreateAPIView):
 
     def delete(self, request, *args, **kwargs):
         try:
-            # todo: this needs to be cleaned up several ways lol
+            # TODO: this needs to be cleaned up several ways lol
             user = User.objects.get(pk=request.user.id)
         except:
             return HttpResponseForbidden()

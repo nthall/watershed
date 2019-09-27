@@ -1,43 +1,69 @@
 # -*- coding: utf-8 -*-
 import datetime
 from fabric import Connection, task
+from invoke import Context
 
 prod = Connection('watershed-prod')
 
 
 @task
-def deploy(c=prod, migrate=False):
+def test(c):
+    c.run('ls /srv/watershed/watershed.git', echo=True)
+
+
+@task
+def deploy(remote=prod, migrate=False):
     """
     deploy to production.
     """
 
-    GIT_SHA = c.local("git rev-parse --short HEAD", capture=True)
+    local = Context()
+
+    GIT_SHA = git_hash()
     TIMESTAMP = datetime.datetime.now().replace(microsecond=0).isoformat()
     DEPLOY_DIR = "/srv/watershed/deploys/{}_{}".format(TIMESTAMP, GIT_SHA)
 
-    c.local("git push origin master")
+    local.run("git push origin master", echo=True)
 
     # sentry release
-    VERSION = c.local("sentry-cli releases propose-version", capture=True)
-    c.local("sentry-cli releases new {}".format(VERSION))
-    c.local("sentry-cli releases set-commits --auto {}".format(VERSION))
+    VERSION = local.run("sentry-cli releases propose-version", echo=True).stdout
+    local.run("sentry-cli releases new {}".format(VERSION), echo=True)
+    local.run("sentry-cli releases set-commits --auto {}".format(VERSION), echo=True)
 
-    c.local("git push deploy master")
+    local.run("git push deploy master -vvv", echo=True)
 
-    c.run("git clone /srv/watershed/watershed.git {}".format(DEPLOY_DIR))
-    c.run("cd {}".format(DEPLOY_DIR))
-    c.run("virtualenv .venv")
-    c.run("source .venv/bin/activate")
+    remote.run("git clone /srv/watershed/watershed.git {}".format(DEPLOY_DIR), echo=True)
+    remote.cd(DEPLOY_DIR, echo=True)
+    remote.run("virtualenv .venv", echo=True)
+    remote.run("source .venv/bin/activate", echo=True)
 
-    c.run("pip install -r requirements.txt")
-    c.run("yarn install")
+    remote.run("pip install -r requirements.txt", echo=True)
+    remote.run("yarn install", echo=True)
 
-    c.run("webpack --config=webpack.config.js")
-    c.run("./manage.py collectstatic --noinput")
+    remote.run("webpack --config=webpack.config.js", echo=True)
+    remote.run("./manage.py collectstatic --noinput", echo=True)
 
     if migrate:
-        c.run("./manage.py migrate")
+        remote.run("./manage.py migrate", echo=True)
 
-    c.run("./manage.py compile_pyc")
-    c.run("ln -nsf {} /srv/watershed/live".format(DEPLOY_DIR))
-    c.run("sudo service uwsgi reload")
+    remote.run("./manage.py compile_pyc", echo=True)
+    remote.run("ln -nsf {} /srv/watershed/live".format(DEPLOY_DIR), echo=True)
+    remote.run("sudo service uwsgi reload", echo=True)
+
+
+@task
+def package_ext():
+    """
+    zip the extension. just making sure idk
+    """
+
+    local = Context()
+    GIT_SHA = git_hash()
+    local.run("webpack --browser", echo=True)
+    local.run("zip -r browser/dist/ browser/releases/extension-{}".format(GIT_SHA))
+
+
+def git_hash():
+
+    local = Context()
+    return local.run("git rev-parse --short HEAD", echo=True).stdout

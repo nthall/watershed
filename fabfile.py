@@ -4,6 +4,7 @@ from fabric import Connection, task
 from invoke import Context
 
 prod = Connection('watershed-prod')
+local = Context()
 
 
 @task
@@ -52,15 +53,14 @@ def deploy(remote=prod, migrate=False):
 
 
 @task
-def package_ext():
+def package_ext(c=local):
     """
     zip the extension. just making sure idk
     """
 
-    local = Context()
     GIT_SHA = git_hash()
     local.run("webpack --browser", echo=True)
-    local.run("zip -r browser/dist/ browser/releases/extension-{}".format(GIT_SHA))
+    local.run("zip -r browser/dist/ browser/releases/extension-{}".format(GIT_SHA), echo=True)
 
 
 def git_hash():

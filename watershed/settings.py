@@ -131,13 +131,23 @@ WEBPACK_LOADER = {
 }
 
 
-# LOGGING SETTINGS BELOW!
-import raven
+# LOGGING/SENTRY SETTINGS
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+if DEBUG:
+    SENTRY_ENV = 'test'
+else:
+    SENTRY_ENV = 'production'
 
-RAVEN_CONFIG = {
-    'dsn': 'https://69327d4caef74ac694a6a76e93c96524:a9698b5624fe450b90626dbee1746e92@sentry.io/274934',  # noqa
-    'release': raven.fetch_git_sha(BASE_DIR),
-}
+import subprocess
+release = subprocess.check_output("git rev-parse HEAD")
+
+sentry_sdk.init(
+    dsn='https://69327d4caef74ac694a6a76e93c96524:a9698b5624fe450b90626dbee1746e92@sentry.io/274934',  # noqa: E501
+    release=release,
+    integrations=[DjangoIntegration()],
+    environment=SENTRY_ENV
+)
 
 default_handler = 'file'
 

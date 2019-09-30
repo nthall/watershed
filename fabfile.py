@@ -41,7 +41,7 @@ def deploy(remote=prod, migrate=False):
     remote.run("pip install -r requirements.txt", echo=True)
     remote.run("yarn install", echo=True)
 
-    remote.run("webpack --config=webpack.config.js", echo=True)
+    remote.run("webpack --mode=production --config=webpack.config.js", echo=True)
     remote.run("./manage.py collectstatic --noinput", echo=True)
 
     if migrate:
@@ -59,11 +59,12 @@ def package_ext(c=local):
     """
 
     GIT_SHA = git_hash()
-    local.run("webpack --browser", echo=True)
-    local.run("zip -r browser/dist/ browser/releases/extension-{}".format(GIT_SHA), echo=True)
+    local.run("webpack --mode=production --browser", echo=True)
+    with local.cd("browser/dist"):
+        local.run("zip -r ../releases/extension_{} *".format(GIT_SHA), echo=True)
 
 
 def git_hash():
 
     local = Context()
-    return local.run("git rev-parse --short HEAD", echo=True).stdout
+    return local.run("git rev-parse --short HEAD", echo=True).stdout.rstrip("\n")

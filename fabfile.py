@@ -48,7 +48,16 @@ def deploy(remote=prod, migrate=False):
 
     remote.run("./manage.py compile_pyc", echo=True)
     remote.run("ln -nsf {} /srv/watershed/live".format(DEPLOY_DIR), echo=True)
+    remote.run(
+        "ln -nsf /srv/watershed/live/watershed.uwsgi.ini /etc/uwsgi/apps-enabled/",
+        echo=True
+    )
     remote.run("sudo service uwsgi reload", echo=True)
+    remote.run(
+        "ln -nsf /srv/watershed/live/watershed.nginx.conf /etc/nginx/sites-enabled/",
+        echo=True
+    )
+    remote.run("sudo service nginx reload", echo=True)
 
 
 @task

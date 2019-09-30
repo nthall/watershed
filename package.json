@@ -32,7 +32,7 @@
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-fontawesome": "^1.6.1",
-    "react-soundcloud-widget": "file:../react-soundcloud-widget",
+    "react-soundcloud-widget": "https://github.com/nthall/react-soundcloud-widget",
     "react-youtube": "^7.5.0",
     "sass-loader": "^6.0.6",
     "style-loader": "^0.20.1",

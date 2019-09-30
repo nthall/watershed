@@ -8,9 +8,9 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 module.exports = [
 {
   name: 'site',
-  mode: 'development',
   // the base directory (absolute path) for resolving the entry option
   context: __dirname,
+  node: false,
   // the entry point we created earlier. Note that './' means 
   // your current directory. You don't have to specify the extension  now,
   // because you will specify extensions later in the `resolve` section
@@ -52,7 +52,7 @@ module.exports = [
         loader: 'babel-loader', 
         query: {
           // specify that we will be dealing with React code
-          presets: ['react', 'env'] 
+          presets: ['react', 'babel-preset-env'] 
         }
       },
       {
@@ -75,8 +75,8 @@ module.exports = [
 },
 {
   name: 'browser',
-  mode: 'development',
   context: path.resolve(__dirname, 'browser'),
+  node: false,
   entry: {
     background: './src/js/background',
     bandcamp: './src/js/bandcamp',
@@ -105,7 +105,7 @@ module.exports = [
         exclude: /node_modules/,
         loader: 'babel-loader',
         query: {
-          presets: ['env']
+          presets: ['babel-preset-env']
         }
       }
     ]

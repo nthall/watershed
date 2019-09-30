@@ -4989,8 +4989,9 @@ react-fontawesome@^1.6.1:
   dependencies:
     prop-types "^15.5.6"
 
-"react-soundcloud-widget@file:../react-soundcloud-widget":
+"react-soundcloud-widget@https://github.com/nthall/react-soundcloud-widget":
   version "2.1.1"
+  resolved "https://github.com/nthall/react-soundcloud-widget#0e8aac5e5003ce2de7fd44f02bd79bccdb252b5a"
   dependencies:
     load-script "^1.0.0"
 

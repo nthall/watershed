@@ -31,4 +31,7 @@ The server is down right now but I will stand it back up soon. In theory, though
 2. `webpack --config webpack.config.js --browser`
 3. This outputs to `browser/dist/` -- that's the folder you want for manually installing in Firefox. I don't remember how Chrome works in this regard anymore.
 
-If that doesn't work, at least you know where to poke around.
+If that doesn't work, at least you know where to poke around. Gosh it'd make my day if you opened an issue about it; I'd be happy to help.
+
+### License
+This software is licensed under the [Cooperative Non-Violent Public License](https://thufie.lain.haus/NPL.html), version 5+.

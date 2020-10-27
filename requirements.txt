@@ -5,7 +5,7 @@ beautifulsoup4==4.6.3
 certifi==2019.9.11
 cffi==1.8.3
 contextlib2==0.5.5
-cryptography==2.7
+cryptography==3.2
 Django==1.11.29
 django-extensions==1.9.9
 django-passwords==0.3.12

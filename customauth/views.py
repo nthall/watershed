@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 import json
 import logging
 
@@ -10,7 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from rest_framework.authtoken.models import Token
 
-from forms import RegistrationForm
+from .forms import RegistrationForm
 
 User = get_user_model()
 
@@ -24,7 +22,7 @@ def register(request):
 
     else:
         form = RegistrationForm()
-        return render(request, 'register.html', {'form': form})
+        return render(request, "register.html", {"form": form})
 
 
 @csrf_exempt
@@ -32,15 +30,15 @@ def register_rest(request):
     if request.method == "POST":
         form = RegistrationForm(json.loads(request.body))
         if form.is_valid():
-            username = form.cleaned_data.get('email_address')
-            password = form.cleaned_data.get('password')
+            username = form.cleaned_data.get("email_address")
+            password = form.cleaned_data.get("password")
             user = authenticate(username=username, password=password)
             if user is None:
                 user = User.objects.create_user(username, password)
                 login(request, user)
 
-            return JsonResponse({'token': user.auth_token.key})
+            return JsonResponse({"token": user.auth_token.key})
         else:
-            return JsonResponse({'errors': form.errors}, status=400)
+            return JsonResponse({"errors": form.errors}, status=400)
     else:
         return HttpResponse(status=405)

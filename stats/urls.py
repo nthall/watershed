@@ -1,7 +1,5 @@
 from django.conf.urls import url
 
-import views
+from .views import index
 
-urlpatterns = [
-    url(r'^$', views.index)
-]
+urlpatterns = [url(r"^$", index)]

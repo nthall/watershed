@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 from django.conf import settings
 from django.db import models
 from django.db.models.signals import post_save
@@ -8,10 +6,10 @@ from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 
 PLATFORMS = (
-    (0, 'Unknown'),
-    (1, 'Bandcamp'),
-    (2, 'Youtube'),
-    (3, 'Soundcloud'),
+    (0, "Unknown"),
+    (1, "Bandcamp"),
+    (2, "Youtube"),
+    (3, "Soundcloud"),
 )
 
 
@@ -24,8 +22,9 @@ class ItemManager(models.Manager):
 
 
 class Item(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='items',
-                             on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, related_name="items", on_delete=models.CASCADE
+    )
     uri = models.URLField()
     platform = models.IntegerField(choices=PLATFORMS)
     artist = models.CharField(max_length=255, blank=True)
@@ -44,7 +43,7 @@ class Item(models.Model):
         return " - ".join([self.user.__unicode__(), self.artist, self.title])
 
     class Meta:
-        ordering = ('position',)
+        ordering = ("position",)
 
     def save(self, *args, **kwargs):
         if self.position is None:
@@ -55,6 +54,6 @@ class Item(models.Model):
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
-    ''' create auth token on user create '''
+    """ create auth token on user create """
     if created:
         Token.objects.create(user=instance)

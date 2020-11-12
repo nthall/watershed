@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 from django import forms
 from django.core.exceptions import ValidationError
 
@@ -13,8 +11,8 @@ class RegistrationForm(forms.Form):
 
     def clean(self):
         cleaned_data = super(RegistrationForm, self).clean()
-        password = cleaned_data.get('password')
-        password2 = cleaned_data.get('password2')
+        password = cleaned_data.get("password")
+        password2 = cleaned_data.get("password2")
 
         if password != password2:
             raise ValidationError("Passwords must match!")

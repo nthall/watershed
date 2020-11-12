@@ -1,18 +1,7 @@
-"""watershed URL Configuration
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/1.8/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  url(r'^$', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  url(r'^$', Home.as_view(), name='home')
-Including another URLconf
-    1. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import include, url
+watershed URL Configuration
+"""
+from django.urls import include, path
 from django.contrib import admin
 
 import rest_framework.authtoken.views as tokenviews
@@ -22,11 +11,11 @@ import customauth.views as authviews
 admin.autodiscover()
 
 urlpatterns = [
-    url(r'^admin/stats/', include('stats.urls')),
-    url(r'^admin/', include(admin.site.urls)),
-    url(r'^auth/', include('rest_framework.urls', namespace='rest_framework')),
-    url(r'^register/', authviews.register_rest),
-    url(r'^authtoken/', tokenviews.obtain_auth_token),
-    url(r'', include('api.urls')),
-    url(r'', include('player.urls')),
+    path(r"^admin/stats/", include("stats.urls")),
+    path(r"^admin/", admin.site.urls),
+    path(r"^auth/", include("rest_framework.urls", namespace="rest_framework")),
+    path(r"^register/", authviews.register_rest),
+    path(r"^authtoken/", tokenviews.obtain_auth_token),
+    path(r"", include("api.urls")),
+    path(r"", include("player.urls")),
 ]

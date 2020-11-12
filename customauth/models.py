@@ -1,8 +1,6 @@
-'''
+"""
 alt models
-'''
-
-from __future__ import unicode_literals
+"""
 
 from django.db import models
 
@@ -12,7 +10,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None):
         if not email:
-            raise ValueError('Accounts must have an email address')
+            raise ValueError("Accounts must have an email address")
 
         user = self.model(email=self.normalize_email(email))
         user.set_password(password)
@@ -27,16 +25,13 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
-    '''
+    """
     override User model
-    '''
+    """
 
     email = models.EmailField(
-        verbose_name='email address',
-        max_length=255,
-        unique=True,
-        blank=False
-        )
+        verbose_name="email address", max_length=255, unique=True, blank=False
+    )
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
 
@@ -53,13 +48,13 @@ class User(AbstractBaseUser):
     def __unicode__(self):
         return self.email
 
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = "email"
 
     def has_perm(self, perm, obj=None):
-        '''
+        """
         TODO: custom perms for reading a user's updates (at the minimum)
               (OR - separate Account model?? ugh idk)
-        '''
+        """
         if self.is_admin:
             return True
 

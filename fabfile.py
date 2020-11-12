@@ -8,18 +8,22 @@ import pytz
 
 @task
 def test(c):
-    c.run('ls -al /srv/watershed/deploys', echo=True)
+    c.run("ls -al /srv/watershed/deploys", echo=True)
 
 
-@task(hosts=['prod'])
+@task(hosts=["prod"])
 def deploy(c, migrate=False):
     """
     deploy to production.
     """
 
     GIT_SHA = git_hash()
-    TIMESTAMP = datetime.datetime.now(pytz.timezone("America/New_York"))\
-        .replace(microsecond=0, tzinfo=None).isoformat().replace(':', '.')
+    TIMESTAMP = (
+        datetime.datetime.now(pytz.timezone("America/New_York"))
+        .replace(microsecond=0, tzinfo=None)
+        .isoformat()
+        .replace(":", ".")
+    )
     DEPLOY_DIR = "/srv/watershed/deploys/{}_{}".format(TIMESTAMP, GIT_SHA)
 
     # ensure origin/master stays up to date
@@ -31,7 +35,10 @@ def deploy(c, migrate=False):
     c.local("sentry-cli releases set-commits --auto {}".format(VERSION), echo=True)
     c.local("git push deploy master", echo=True)
 
-    c.run("/usr/bin/git clone file:///srv/watershed/watershed.git {}".format(DEPLOY_DIR), echo=True)
+    c.run(
+        "/usr/bin/git clone file:///srv/watershed/watershed.git {}".format(DEPLOY_DIR),
+        echo=True,
+    )
 
     c.run("virtualenv {}/.venv".format(DEPLOY_DIR), echo=True)
     with c.cd(DEPLOY_DIR):
@@ -51,12 +58,12 @@ def deploy(c, migrate=False):
     c.run("ln -nsf {} /srv/watershed/live".format(DEPLOY_DIR))
     c.run(
         "ln -nsf /srv/watershed/live/watershed.uwsgi.ini /etc/uwsgi/apps-enabled/",
-        echo=True
+        echo=True,
     )
     c.run("sudo service uwsgi reload")
     c.run(
         "ln -nsf /srv/watershed/live/watershed.nginx.conf /etc/nginx/sites-enabled/",
-        echo=True
+        echo=True,
     )
     c.run("sudo service nginx reload")
 

@@ -1,6 +1,6 @@
-'''
+"""
 mostly adapted from the Django custom user docs
-'''
+"""
 
 from django import forms
 from django.contrib import admin
@@ -8,7 +8,7 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
-from models import User
+from .models import User
 
 from passwords.fields import PasswordField
 
@@ -18,19 +18,20 @@ class UserCreationForm(forms.ModelForm):
     A form for creating new users. Includes all the required
     fields, plus a repeated password.
     """
-    email = forms.EmailField(label='Email Address')
-    password1 = PasswordField(label='Password')
-    password2 = PasswordField(label='Confirm password')
+
+    email = forms.EmailField(label="Email Address")
+    password1 = PasswordField(label="Password")
+    password2 = PasswordField(label="Confirm password")
 
     class Meta:
         model = User
-        fields = ('email',)
+        fields = ("email",)
 
     def clean_password2(self):
-        '''
+        """
         Check that the two password entries match
         & enforce minimum length
-        '''
+        """
         password1 = self.cleaned_data.get("password1")
         password2 = self.cleaned_data.get("password2")
         if password1 and password2 and password1 != password2:
@@ -52,11 +53,12 @@ class UserChangeForm(forms.ModelForm):
     the user, but replaces the password field with admin's
     password hash display field.
     """
+
     password = ReadOnlyPasswordHashField()
 
     class Meta:
         model = User
-        fields = ('email', 'password', 'is_active', 'is_admin')
+        fields = ("email", "password", "is_active", "is_admin")
 
     def clean_password(self):
         # Regardless of what the user provides, return the initial value.
@@ -73,24 +75,21 @@ class UserAdmin(BaseUserAdmin):
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ('email', 'is_admin')
-    list_filter = ('is_admin',)
+    list_display = ("email", "is_admin")
+    list_filter = ("is_admin",)
     fieldsets = (
-        (None, {'fields': ('email', 'password')}),
-        ('Permissions', {'fields': ('is_admin',)}),
+        (None, {"fields": ("email", "password")}),
+        ("Permissions", {"fields": ("is_admin",)}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
     add_fieldsets = (
-        (
-            None, {
-                'classes': ('wide',),
-                'fields': ('email', 'password1', 'password2')}
-        ),
+        (None, {"classes": ("wide",), "fields": ("email", "password1", "password2")}),
     )
-    search_fields = ('email',)
-    ordering = ('email',)
+    search_fields = ("email",)
+    ordering = ("email",)
     filter_horizontal = ()
+
 
 # Now register the new UserAdmin...
 admin.site.register(User, UserAdmin)

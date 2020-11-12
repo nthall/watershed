@@ -1,10 +1,12 @@
-from __future__ import unicode_literals
-
 import json
 import logging
 
-from django.http import HttpResponse, Http404, HttpResponseBadRequest,\
-    HttpResponseForbidden
+from django.http import (
+    HttpResponse,
+    Http404,
+    HttpResponseBadRequest,
+    HttpResponseForbidden,
+)
 from django.contrib.auth import get_user_model
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
@@ -16,22 +18,26 @@ from rest_framework.response import Response
 from rest_framework_bulk.mixins import BulkUpdateModelMixin
 from rest_framework.authtoken.models import Token
 
-from models import Item
-from permissions import IsOwner, IsSelf
-from scraper import Scraper, UnsupportedPlatformError
-from serializers import ItemSerializer, PositionSerializer
+from .models import Item
+from .permissions import IsOwner, IsSelf
+from .scraper import Scraper, UnsupportedPlatformError
+from .serializers import ItemSerializer, PositionSerializer
 
 User = get_user_model()
 
 logger = logging.getLogger(__name__)
-jslogger = logging.getLogger('js')
+jslogger = logging.getLogger("js")
 
 
 class Queue(ListCreateAPIView):
-    '''
+    """
     view or add to the queue
-    '''
-    permission_classes = (permissions.IsAuthenticated, IsOwner,)
+    """
+
+    permission_classes = (
+        permissions.IsAuthenticated,
+        IsOwner,
+    )
     serializer_class = ItemSerializer
 
     def perform_create(self, serializer):
@@ -43,7 +49,7 @@ class Queue(ListCreateAPIView):
         # previously here we listened for the UnsupportedPlatformError and
         # re-raised it. not sure why. but that will either swallow other Errors
         # or require great duplication eventually. ugh.
-        uri = request.data.get('uri')
+        uri = request.data.get("uri")
         if not uri:
             return HttpResponseBadRequest("No valid uri was provided.")
 
@@ -68,10 +74,14 @@ class Queue(ListCreateAPIView):
 
 
 class ItemDetail(BulkUpdateModelMixin, ListCreateAPIView):
-    '''
+    """
     view, update, or remove an Item
-    '''
-    permission_classes = (permissions.IsAuthenticated, IsOwner,)
+    """
+
+    permission_classes = (
+        permissions.IsAuthenticated,
+        IsOwner,
+    )
     serializer_class = ItemSerializer
 
     def perform_create(self, serializer):
@@ -109,10 +119,14 @@ class ItemDetail(BulkUpdateModelMixin, ListCreateAPIView):
 
 
 class Position(RetrieveUpdateAPIView):
-    '''
+    """
     update user's position in list
-    '''
-    permission_classes = (permissions.IsAuthenticated, IsSelf,)
+    """
+
+    permission_classes = (
+        permissions.IsAuthenticated,
+        IsSelf,
+    )
     serializer_class = PositionSerializer
 
     def get_object(self):
@@ -121,14 +135,14 @@ class Position(RetrieveUpdateAPIView):
 
 class JsLog(View):
     def post(self, request):
-        component = request.POST.get('component')
-        func = request.POST.get('func')
-        err = request.POST.get('err')
-        auth = request.POST.get('auth')
+        component = request.POST.get("component")
+        func = request.POST.get("func")
+        err = request.POST.get("err")
+        auth = request.POST.get("auth")
 
         if auth:
             auth = json.loads(auth)
-            token = Token.objects.get(key=auth['token'])
+            token = Token.objects.get(key=auth["token"])
             u_str = token.user.email + ": "
         else:
             u_str = ""
@@ -138,9 +152,9 @@ class JsLog(View):
         else:
             loc = ""
 
-        msg = u_str + loc + request.POST.get('str')
+        msg = u_str + loc + request.POST.get("str")
 
-        if (err == 'true'):
+        if err == "true":
             jslogger.error(msg)
         else:
             jslogger.debug(msg)

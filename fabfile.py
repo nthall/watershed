@@ -18,8 +18,8 @@ def deploy(c, migrate=False):
     """
 
     GIT_SHA = git_hash()
-    TIMESTAMP = datetime.datetime.now(pytz.timezone('America/New_York'))\
-        .replace(microsecond=0).isoformat().replace(':', '.')
+    TIMESTAMP = datetime.datetime.now(pytz.timezone("America/New_York"))\
+        .replace(microsecond=0, tzinfo=None).isoformat().replace(':', '.')
     DEPLOY_DIR = "/srv/watershed/deploys/{}_{}".format(TIMESTAMP, GIT_SHA)
 
     # ensure origin/master stays up to date
@@ -39,7 +39,7 @@ def deploy(c, migrate=False):
             c.run("pip install -r requirements.txt", echo=True)
             c.run("yarn install", echo=True)
 
-            c.run("webpack --mode=production --config=webpack.config.js", echo=True)
+            c.run("node_modules/.bin/webpack --mode=production --site", echo=True)
             c.run("./manage.py collectstatic --noinput", echo=True)
 
             if migrate:

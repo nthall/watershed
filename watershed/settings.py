@@ -133,14 +133,14 @@ WEBPACK_LOADER = {
 
 
 # LOGGING/SENTRY SETTINGS
-import sentry_sdk
-from sentry_sdk.integrations.django import DjangoIntegration
+import sentry_sdk  # noqa: E402
+from sentry_sdk.integrations.django import DjangoIntegration  # noqa: E402
 if DEBUG:
     SENTRY_ENV = 'test'
 else:
     SENTRY_ENV = 'production'
 
-import subprocess
+import subprocess  # noqa: E402
 release = subprocess.check_output("git rev-parse HEAD")
 
 sentry_sdk.init(

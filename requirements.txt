@@ -19,7 +19,7 @@ html5lib==1.0.1
 invoke==1.3.0
 ipaddress==1.0.22
 oauthlib==2.0.0
-paramiko==2.6.0
+paramiko==2.10.1
 psycopg2==2.7.5
 pycparser==2.17
 pycrypto==2.6.1

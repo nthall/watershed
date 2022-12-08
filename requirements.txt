@@ -2,7 +2,7 @@ argon2-cffi==16.2.0
 asn1crypto==0.24.0
 bcrypt==3.1.7
 beautifulsoup4==4.6.3
-certifi==2019.9.11
+certifi==2022.12.7
 cffi==1.8.3
 contextlib2==0.5.5
 cryptography==2.7
